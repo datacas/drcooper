@@ -40,7 +40,7 @@ From §3.2 and §3.3; none is added here.
 
 ## Visual identity
 
-`brief_identidad.md` and DC-045 (TUI) concern identity. They do not block R0 or the engine core: the specification already states that graphic deliverables are not functional capabilities of the engine (`docs/plan/DECISIONES_Y_COBERTURA.md`).
+The identity brief (`brief_identidad.md`) is considered in DC-001, ADR-01 and DC-045 (`docs/plan/DECISIONES_Y_COBERTURA.md`). It does not block R0 or the engine core: the specification already states that graphic deliverables are not functional capabilities of the engine.
 
 ## For maintainer review
 
