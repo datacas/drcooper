@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="t">
+  <title id="t">DrCooper mascot, monochrome inverse</title>
+  <mask id="mono" maskUnits="userSpaceOnUse" x="0" y="0" width="512" height="512">
+    <g id="neck" fill="none" stroke="#FFFFFF" stroke-width="9" stroke-linejoin="round">
+      <path d="M 212 300 V 404 H 300 V 300 Z" />
+    </g>
+    <g id="shirt" fill="none" stroke="#FFFFFF" stroke-width="9" stroke-linejoin="round">
+      <path d="M 26 512 C 38 414 116 358 198 344 C 206 382 226 400 256 400 C 286 400 306 382 314 344 C 396 358 474 414 486 512 Z" />
+    </g>
+    <g id="collar" fill="none" stroke="#FFFFFF" stroke-width="14" stroke-linecap="butt">
+      <path d="M 198 344 C 206 382 226 400 256 400 C 286 400 306 382 314 344" />
+    </g>
+    <g id="ear-l" fill="none" stroke="#FFFFFF" stroke-width="9">
+      <ellipse cx="136" cy="212" rx="18" ry="25" />
+    </g>
+    <g id="ear-r" fill="none" stroke="#FFFFFF" stroke-width="9">
+      <ellipse cx="376" cy="212" rx="18" ry="25" />
+    </g>
+    <g id="head" fill="none" stroke="#FFFFFF" stroke-width="9" stroke-linejoin="round">
+      <path d="M 256 76 C 332 76 370 132 370 200 C 370 272 326 322 256 322 C 186 322 142 272 142 200 C 142 132 180 76 256 76 Z" />
+    </g>
+    <g id="hair" fill="none" stroke="#FFFFFF" stroke-width="9" stroke-linejoin="round">
+      <path d="M 140 204 C 133 126 186 82 256 82 C 326 82 379 126 372 204 C 366 172 352 152 330 143 C 314 136 302 120 296 104 C 272 132 236 140 206 138 C 172 136 150 166 140 204 Z" />
+    </g>
+    <g id="brow-l" fill="none" stroke="#FFFFFF" stroke-width="13" stroke-linecap="round">
+      <path d="M 190 190 C 204 178 230 176 244 184" />
+    </g>
+    <g id="brow-r" fill="none" stroke="#FFFFFF" stroke-width="13" stroke-linecap="round">
+      <path d="M 262 186 C 276 176 304 178 318 190" />
+    </g>
+    <g id="eye-l" fill="none" stroke="#FFFFFF">
+      <ellipse cx="214" cy="226" rx="26" ry="30" />
+    </g>
+    <g id="eye-r" fill="none" stroke="#FFFFFF">
+      <ellipse cx="298" cy="226" rx="26" ry="30" />
+    </g>
+    <g id="pupil-l" fill="#152238">
+      <circle cx="219" cy="230" r="12.5" fill="#FFFFFF" stroke="none" />
+    </g>
+    <g id="pupil-r" fill="#152238">
+      <circle cx="293" cy="230" r="12.5" fill="#FFFFFF" stroke="none" />
+    </g>
+    <g id="glint-l" fill="#FFFFFF">
+      <circle cx="223" cy="225" r="4.5" fill="#000000" stroke="none" />
+    </g>
+    <g id="glint-r" fill="#FFFFFF">
+      <circle cx="297" cy="225" r="4.5" fill="#000000" stroke="none" />
+    </g>
+    <g id="nose" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round">
+      <path d="M 249 250 C 253 262 261 262 265 251" />
+    </g>
+    <g id="mouth" fill="none" stroke="#FFFFFF" stroke-width="9" stroke-linecap="round">
+      <path d="M 224 284 C 242 302 276 302 290 282" />
+    </g>
+    <g id="spark" transform="translate(211.2 407.2) scale(0.7)" fill="none" stroke="#FFFFFF">
+      <path d="M 34 24 L 80 56 L 56 68 L 94 104" fill="none" stroke="#FFFFFF" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+  </mask>
+  <rect x="0" y="0" width="512" height="512" fill="#FFFFFF" mask="url(#mono)"/>
+</svg>
