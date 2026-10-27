@@ -7,7 +7,8 @@ Operating rules for any agent working in this repository.
 - **Repository artifacts: English.** Code, identifiers, file names, comments, doc comments, commit messages, branch names, issues, pull requests, reviews, documentation, diagram labels. No exceptions.
 - **Conversation with the maintainer: Spanish.** Always, regardless of the language of the code being discussed.
 - The rule splits by destination, not by topic: you may explain a change in Spanish and still commit it in English.
-- The canonical set in `docs/plan/` is Spanish and frozen. Never translate it in place; it is hash-verified by `docs/plan/DOCUMENTOS_CANONICOS.json`.
+- **Forward only, from 2026-10-27.** Nothing that already exists gets translated: the 121 issues, the milestones, the Project views and the canonical set stay in Spanish. Do not propose a backfill, a "coherence" pass or a translation PR.
+- **Editing existing Spanish text:** keep Spanish for the fragment you touch and leave the surrounding text alone. A mixed artifact is worse than a Spanish one.
 
 ## Repository state
 

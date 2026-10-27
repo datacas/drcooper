@@ -13,7 +13,9 @@ Everything committed to this repository is written in **English**:
 
 Conversation with the maintainer is in **Spanish**. This applies to chat, not to repository content: an assistant may answer in Spanish and must still commit in English.
 
-The canonical document set in `docs/plan/` predates this rule and is published in Spanish. It stays as it is, frozen and hash-verified; translating it is a new revision of the set, not an edit.
+The rule applies from **2026-10-27 onward**. Nothing that already exists is translated: the canonical set in `docs/plan/`, the 121 issues, the milestones and the Project views stay in Spanish. Do not open a translation backfill.
+
+When editing an existing Spanish artifact, keep Spanish for the fragment you touch and do not translate the surrounding text.
 
 Anything you write in another language will be asked to be translated before merge.
 
