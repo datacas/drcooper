@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 780" width="512" height="780" role="img" aria-labelledby="t">
+  <title id="t">DrCooper mascot, full body</title>
+    <g id="leg-l" fill="none" stroke="#152238" stroke-width="54" stroke-linecap="round">
+      <path d="M 224 592 L 216 688" />
+    </g>
+    <g id="leg-r" fill="none" stroke="#152238" stroke-width="54" stroke-linecap="round">
+      <path d="M 288 592 L 296 688" />
+    </g>
+    <g id="shoe-l" fill="#FFFFFF" stroke="#152238" stroke-width="9">
+      <rect x="176" y="682" width="68" height="30" rx="14" />
+    </g>
+    <g id="shoe-r" fill="#FFFFFF" stroke="#152238" stroke-width="9">
+      <rect x="268" y="682" width="68" height="30" rx="14" />
+    </g>
+    <g id="sleeve-l" fill="none" stroke="#152238" stroke-width="54" stroke-linecap="round">
+      <path d="M 182 402 L 150 474" />
+    </g>
+    <g id="sleeve-l-red" fill="none" stroke="#E53935" stroke-width="36" stroke-linecap="round">
+      <path d="M 182 402 L 150 474" />
+    </g>
+    <g id="sleeve-r" fill="none" stroke="#152238" stroke-width="54" stroke-linecap="round">
+      <path d="M 330 402 L 362 474" />
+    </g>
+    <g id="sleeve-r-red" fill="none" stroke="#E53935" stroke-width="36" stroke-linecap="round">
+      <path d="M 330 402 L 362 474" />
+    </g>
+    <g id="forearm-l" fill="none" stroke="#152238" stroke-width="40" stroke-linecap="round">
+      <path d="M 150 474 L 126 556" />
+    </g>
+    <g id="forearm-l-skin" fill="none" stroke="#F2C6A0" stroke-width="24" stroke-linecap="round">
+      <path d="M 150 474 L 126 556" />
+    </g>
+    <g id="forearm-r" fill="none" stroke="#152238" stroke-width="40" stroke-linecap="round">
+      <path d="M 362 474 L 386 556" />
+    </g>
+    <g id="forearm-r-skin" fill="none" stroke="#F2C6A0" stroke-width="24" stroke-linecap="round">
+      <path d="M 362 474 L 386 556" />
+    </g>
+    <g id="hand-l" fill="#F2C6A0" stroke="#152238" stroke-width="9">
+      <circle cx="126" cy="558" r="19" />
+    </g>
+    <g id="hand-r" fill="#F2C6A0" stroke="#152238" stroke-width="9">
+      <circle cx="386" cy="558" r="19" />
+    </g>
+    <g id="neck" fill="#F2C6A0" stroke="#152238" stroke-width="9" stroke-linejoin="round">
+      <path d="M 232 300 V 396 H 280 V 300 Z" />
+    </g>
+    <g id="shirt" fill="#E53935" stroke="#152238" stroke-width="9" stroke-linejoin="round">
+      <path d="M 166 600 C 160 516 164 424 176 396 C 194 378 214 370 232 370 L 234 394 C 242 408 270 408 278 394 L 280 370 C 298 370 318 378 336 396 C 348 424 352 516 346 600 Z" />
+    </g>
+    <g id="collar" fill="none" stroke="#C62828" stroke-width="12" stroke-linecap="butt">
+      <path d="M 234 394 C 242 408 270 408 278 394" />
+    </g>
+    <g id="ear-l" fill="#F2C6A0" stroke="#152238" stroke-width="9">
+      <ellipse cx="136" cy="212" rx="18" ry="25" />
+    </g>
+    <g id="ear-r" fill="#F2C6A0" stroke="#152238" stroke-width="9">
+      <ellipse cx="376" cy="212" rx="18" ry="25" />
+    </g>
+    <g id="head" fill="#F2C6A0" stroke="#152238" stroke-width="9" stroke-linejoin="round">
+      <path d="M 256 76 C 332 76 370 132 370 200 C 370 272 326 322 256 322 C 186 322 142 272 142 200 C 142 132 180 76 256 76 Z" />
+    </g>
+    <g id="hair" fill="#3A2A22" stroke="#152238" stroke-width="9" stroke-linejoin="round">
+      <path d="M 140 204 C 133 126 186 82 256 82 C 326 82 379 126 372 204 C 366 172 352 152 330 143 C 314 136 302 120 296 104 C 272 132 236 140 206 138 C 172 136 150 166 140 204 Z" />
+    </g>
+    <g id="brow-l" fill="none" stroke="#3A2A22" stroke-width="13" stroke-linecap="round">
+      <path d="M 190 190 C 204 178 230 176 244 184" />
+    </g>
+    <g id="brow-r" fill="none" stroke="#3A2A22" stroke-width="13" stroke-linecap="round">
+      <path d="M 262 186 C 276 176 304 178 318 190" />
+    </g>
+    <g id="eye-l" fill="#FFFFFF">
+      <ellipse cx="214" cy="226" rx="26" ry="30" />
+    </g>
+    <g id="eye-r" fill="#FFFFFF">
+      <ellipse cx="298" cy="226" rx="26" ry="30" />
+    </g>
+    <g id="pupil-l" fill="#152238">
+      <circle cx="219" cy="230" r="12.5" />
+    </g>
+    <g id="pupil-r" fill="#152238">
+      <circle cx="293" cy="230" r="12.5" />
+    </g>
+    <g id="glint-l" fill="#FFFFFF">
+      <circle cx="223" cy="225" r="4.5" />
+    </g>
+    <g id="glint-r" fill="#FFFFFF">
+      <circle cx="297" cy="225" r="4.5" />
+    </g>
+    <g id="nose" fill="none" stroke="#D99E76" stroke-width="8" stroke-linecap="round">
+      <path d="M 249 250 C 253 262 261 262 265 251" />
+    </g>
+    <g id="mouth" fill="none" stroke="#8A4B3A" stroke-width="9" stroke-linecap="round">
+      <path d="M 224 284 C 242 302 276 302 290 282" />
+    </g>
+    <g id="spark" transform="translate(226 476) scale(0.48)">
+      <path d="M 34 24 L 80 56 L 56 68 L 94 104" fill="none" stroke="#152238" stroke-width="52.5" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M 34 24 L 80 56 L 56 68 L 94 104" fill="none" stroke="#FFD43B" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+</svg>
