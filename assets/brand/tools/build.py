@@ -146,7 +146,7 @@ def _inject_spark(root, mono: str | None) -> None:
         root.insert(index, wrapper)
 
 
-def _mono_geometry(group):
+def _mono_geometry(group) -> list:
     """White paints ink, black cuts a hole. Strokes only: the mono build is
     line art, never a filled silhouette."""
     copy = ET.fromstring(ET.tostring(group))
@@ -169,7 +169,17 @@ def _mono_geometry(group):
     else:
         copy.set("fill", "none")
         copy.set("stroke", "#FFFFFF")
-    return copy
+
+    nodes = [copy]
+    if gid in ("head", "shirt"):
+        # Knock out whatever sits behind this shape so the line art does not
+        # show the edges of hidden parts through it (neck inside the shirt,
+        # neck inside the head).
+        knockout = ET.fromstring(ET.tostring(group))
+        knockout.set("fill", "#000000")
+        knockout.set("stroke", "none")
+        nodes.insert(0, knockout)
+    return nodes
 
 
 def art_markup(name: str, mono: str | None = None, indent: str = "  ") -> str:
@@ -177,7 +187,9 @@ def art_markup(name: str, mono: str | None = None, indent: str = "  ") -> str:
     root = ET.parse(SRC / name).getroot()
     _inject_spark(root, mono)
 
-    nodes = [_mono_geometry(node) for node in root] if mono else list(root)
+    nodes = list(root)
+    if mono:
+        nodes = [shape for node in root for shape in _mono_geometry(node)]
     wrapper = ET.Element("g")
     wrapper.extend(nodes)
     ET.indent(wrapper, "  ")

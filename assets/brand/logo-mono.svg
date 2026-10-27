@@ -5,6 +5,9 @@
       <g id="neck" fill="none" stroke="#FFFFFF" stroke-width="9" stroke-linejoin="round">
         <path d="M 212 300 V 404 H 300 V 300 Z" />
       </g>
+      <g id="shirt" fill="#000000" stroke="none" stroke-width="9" stroke-linejoin="round">
+        <path d="M 26 512 C 38 414 116 358 198 344 C 206 382 226 400 256 400 C 286 400 306 382 314 344 C 396 358 474 414 486 512 Z" />
+      </g>
       <g id="shirt" fill="none" stroke="#FFFFFF" stroke-width="9" stroke-linejoin="round">
         <path d="M 26 512 C 38 414 116 358 198 344 C 206 382 226 400 256 400 C 286 400 306 382 314 344 C 396 358 474 414 486 512 Z" />
       </g>
@@ -16,6 +19,9 @@
       </g>
       <g id="ear-r" fill="none" stroke="#FFFFFF" stroke-width="9">
         <ellipse cx="376" cy="212" rx="18" ry="25" />
+      </g>
+      <g id="head" fill="#000000" stroke="none" stroke-width="9" stroke-linejoin="round">
+        <path d="M 256 76 C 332 76 370 132 370 200 C 370 272 326 322 256 322 C 186 322 142 272 142 200 C 142 132 180 76 256 76 Z" />
       </g>
       <g id="head" fill="none" stroke="#FFFFFF" stroke-width="9" stroke-linejoin="round">
         <path d="M 256 76 C 332 76 370 132 370 200 C 370 272 326 322 256 322 C 186 322 142 272 142 200 C 142 132 180 76 256 76 Z" />
