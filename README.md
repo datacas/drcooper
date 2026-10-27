@@ -27,6 +27,8 @@ El conjunto canónico es **DC-DOCSET-0.3.0**, fechado el 2026-10-26. Se publica 
 
 Las 52 issues padre y sus 69 incrementos están publicados en la pestaña **Issues**, agrupados por milestones `R0`–`R6` y etiquetados por área, prioridad y tamaño. Los incrementos son sub-issues del padre y cada uno puede tener su propio PR. Las dependencias del plan apuntan a los números reales de GitHub.
 
+El tablero de ejecución es **[DrCooper — Plan](https://github.com/users/datacas/projects/3)**, con cuatro vistas: `Plan` (padres), `Ejecución` (incrementos por estado), `R0` (trabajo inmediato) y `P0` (prioridad bloqueante). El campo `Status` y los workflows de cierre/PR viven en el Project; la fuente de verdad sigue siendo este repositorio y las issues.
+
 ## Cómo se trabaja aquí
 
 `main` está protegida: **todos los cambios entran mediante pull request**. No se permite push directo, force push ni borrado de la rama. Un PR debe describir el cambio, enlazar la issue correspondiente y aportar la evidencia de aceptación definida en el plan.
