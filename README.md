@@ -23,7 +23,7 @@ The canonical set is **DC-DOCSET-0.3.0**, dated 2026-10-26. It is published byte
 | [Brand brief](brief_identidad.md) | Mascot and visual direction |
 | [Manifest](docs/plan/DOCUMENTOS_CANONICOS.json) | Inventory, versions, sizes and hashes |
 
-> The canonical set is currently written in Spanish. It is frozen at 0.3.0 and is not translated in place: doing so would break the manifest hashes. A translation is a new revision of the set, not an edit.
+> The canonical set is Spanish and stays that way. The English rule applies from 2026-10-27 onward; documents, issues and Project views created before it are not translated.
 
 ## Backlog on GitHub
 
