@@ -1,44 +1,54 @@
 # DrCooper
 
-**Tu segundo cerebro para el código.**
+**Your code's second brain.**
 
-DrCooper es un motor local de inteligencia para agentes de programación —Codex, Claude Code y OpenCode— que unifica navegación semántica, ejecución y contexto, memoria persistente, grafo de código, documentación y evolución del conocimiento. LLM y JEV son opcionales e independientes: el núcleo funciona sin ellos.
+DrCooper is a local intelligence engine for coding agents — Codex, Claude Code and OpenCode — that unifies semantic navigation, execution and context, persistent memory, a code graph, documentation and knowledge evolution. LLM and JEV are optional and independent: the core works without them.
 
-> **Estado:** planificación. Este repositorio contiene la especificación y el plan de producto; todavía no hay implementación. La ejecución autorizada empieza por R0 (discovery), no por código.
+> **Status:** planning. This repository holds the specification and the product plan; there is no implementation yet. Authorised execution starts with R0 (discovery), not with code.
 
-## Documentación
+## Documentation
 
-El conjunto canónico es **DC-DOCSET-0.3.0**, fechado el 2026-10-26. Se publica byte a byte, con sus hashes SHA-256 originales.
+The canonical set is **DC-DOCSET-0.3.0**, dated 2026-10-26. It is published byte for byte, with its original SHA-256 hashes.
 
-| Documento | Contenido |
+| Document | Contents |
 |---|---|
-| [Plan de producto](docs/plan/README.md) | Punto de entrada, convenciones y límites |
-| [Especificación maestra](drcooper_ESPECIFICACION_MAESTRA.md) | Producto, arquitectura, contratos y criterios |
-| [Roadmap](docs/plan/ROADMAP.md) | Entregas R0–R6 y puertas de salida |
-| [Backlog](docs/plan/ISSUES.md) | 52 issues padre con aceptación verificable |
-| [Incrementos](docs/plan/INCREMENTOS.md) | 69 subtareas de las 23 issues L |
-| [Decisiones y cobertura](docs/plan/DECISIONES_Y_COBERTURA.md) | ADR pendientes y trazabilidad |
-| [DrCooper Bench](docs/plan/BENCHMARKS.md) | Contrato run / compare / report |
-| [Auditorías](docs/plan/AUDITORIA_CAMBIOS.md) | Primera revisión y [segunda](docs/plan/AUDITORIA_SEGUNDA.md) |
-| [Brief de identidad](brief_identidad.md) | Mascota y dirección visual |
-| [Manifiesto](docs/plan/DOCUMENTOS_CANONICOS.json) | Inventario, versiones, tamaños y hashes |
+| [Product plan](docs/plan/README.md) | Entry point, conventions and limits |
+| [Master specification](drcooper_ESPECIFICACION_MAESTRA.md) | Product, architecture, contracts and criteria |
+| [Roadmap](docs/plan/ROADMAP.md) | R0–R6 deliveries and exit gates |
+| [Backlog](docs/plan/ISSUES.md) | 52 parent issues with verifiable acceptance |
+| [Increments](docs/plan/INCREMENTOS.md) | 69 subtasks of the 23 L-sized issues |
+| [Decisions and coverage](docs/plan/DECISIONES_Y_COBERTURA.md) | Pending ADRs and traceability |
+| [DrCooper Bench](docs/plan/BENCHMARKS.md) | run / compare / report contract |
+| [Audits](docs/plan/AUDITORIA_CAMBIOS.md) | First review and [second](docs/plan/AUDITORIA_SEGUNDA.md) |
+| [Brand brief](brief_identidad.md) | Mascot and visual direction |
+| [Manifest](docs/plan/DOCUMENTOS_CANONICOS.json) | Inventory, versions, sizes and hashes |
 
-## Backlog en GitHub
+> The canonical set is currently written in Spanish. It is frozen at 0.3.0 and is not translated in place: doing so would break the manifest hashes. A translation is a new revision of the set, not an edit.
 
-Las 52 issues padre y sus 69 incrementos están publicados en la pestaña **Issues**, agrupados por milestones `R0`–`R6` y etiquetados por área, prioridad y tamaño. Los incrementos son sub-issues del padre y cada uno puede tener su propio PR. Las dependencias del plan apuntan a los números reales de GitHub.
+## Backlog on GitHub
 
-El tablero de ejecución es **[DrCooper — Plan](https://github.com/users/datacas/projects/3)**, con cuatro vistas: `Plan` (padres), `Ejecución` (incrementos por estado), `R0` (trabajo inmediato) y `P0` (prioridad bloqueante). El campo `Status` y los workflows de cierre/PR viven en el Project; la fuente de verdad sigue siendo este repositorio y las issues.
+The 52 parent issues and their 69 increments are published in the **Issues** tab, grouped by the `R0`–`R6` milestones and labelled by area, priority and size. Increments are sub-issues of their parent and each can have its own PR. Plan dependencies point at the real GitHub numbers.
 
-## Cómo se trabaja aquí
+The execution board is **[DrCooper — Plan](https://github.com/users/datacas/projects/3)**, with four views: `Plan` (parents), `Ejecución` (increments by state), `R0` (immediate work) and `P0` (blocking priority). The `Status` field and the close/PR workflows live in the Project; the source of truth remains this repository and the issues.
 
-`main` está protegida: **todos los cambios entran mediante pull request**. No se permite push directo, force push ni borrado de la rama. Un PR debe describir el cambio, enlazar la issue correspondiente y aportar la evidencia de aceptación definida en el plan.
+## How work happens here
 
-Antes de implementar una issue, comprueba sus decisiones bloqueantes y dependencias en [DECISIONES_Y_COBERTURA.md](docs/plan/DECISIONES_Y_COBERTURA.md) y [ROADMAP.md](docs/plan/ROADMAP.md). Las issues L no se abordan como un único PR: se asignan por incrementos.
+`main` is protected: **every change lands through a pull request**. Direct pushes, force pushes and branch deletion are not allowed. A PR must describe the change, link the corresponding issue and provide the acceptance evidence defined in the plan.
 
-## Nota de publicación
+Before implementing an issue, check its blocking decisions and dependencies in [DECISIONES_Y_COBERTURA.md](docs/plan/DECISIONES_Y_COBERTURA.md) and [ROADMAP.md](docs/plan/ROADMAP.md). L-sized issues are not handled as a single PR: they are split into increments.
 
-Los documentos conservan el estado y las afirmaciones de su revisión del 2026-10-26 (por ejemplo, «no hay repositorio remoto» o «ninguna issue está publicada»). El conjunto se mantiene intacto para que el manifiesto y sus hashes sigan siendo verificables. La publicación del repositorio y del backlog es posterior y no altera el contenido canónico.
+## Language
 
-## Licencia
+Everything that lives in this repository is written in **English**: code, identifiers, comments, commit messages, branch names, issues, pull requests, documentation and file names.
 
-[MIT](LICENSE). Puedes usar, modificar y distribuir el proyecto; se agradece la mención.
+Conversation with the maintainer is in **Spanish**. That is a rule about how the assistant talks to the owner, not about what gets committed.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md#language) for the full policy.
+
+## Publication note
+
+The documents keep the state and the claims of their 2026-10-26 revision (for example, "there is no remote repository" or "no issue is published"). The set stays intact so the manifest and its hashes remain verifiable. Publishing the repository and the backlog happened later and does not alter the canonical content.
+
+## License
+
+[MIT](LICENSE). You may use, modify and distribute the project; attribution is appreciated.

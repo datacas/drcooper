@@ -1,21 +1,46 @@
-# Contribuir
+# Contributing
 
-Gracias por el interés en DrCooper.
+Thanks for your interest in DrCooper.
 
-## Antes de abrir un PR
+## Language
 
-1. Localiza la issue padre o el incremento en la pestaña **Issues**. Las issues de tamaño `L` se trabajan por incrementos, nunca como un único PR.
-2. Comprueba las decisiones bloqueantes y dependencias en [DECISIONES_Y_COBERTURA.md](docs/plan/DECISIONES_Y_COBERTURA.md) y [ROADMAP.md](docs/plan/ROADMAP.md).
-3. Si la issue aún no está preparada, coméntalo en ella antes de escribir código.
+Everything committed to this repository is written in **English**:
 
-## Flujo
+- source code, identifiers, file and directory names;
+- comments, doc comments and commit messages;
+- branch names, issues, pull requests, reviews and commit discussions;
+- documentation and diagrams.
 
-- `main` está protegida: **solo se entra mediante pull request**. No hay push directo, force push ni borrado de la rama.
-- Crea una rama corta y descriptiva, por ejemplo `dc-007-base-rust`.
-- Un PR debe incluir: qué cambia, qué issue cierra o referencia (`Closes #N`), cómo se ha probado y qué límites quedan.
-- La aceptación se demuestra con evidencia ejecutada: comando o escenario, versiones y entorno, resultado y artefacto. Una inspección de código no sustituye una prueba de comportamiento.
-- No se anuncia como disponible ninguna capacidad que solo haya pasado dobles o pruebas simuladas; el plan distingue `contract_tested`, `integration_verified` y `production_ready`.
+Conversation with the maintainer is in **Spanish**. This applies to chat, not to repository content: an assistant may answer in Spanish and must still commit in English.
 
-## Documentación canónica
+The canonical document set in `docs/plan/` predates this rule and is published in Spanish. It stays as it is, frozen and hash-verified; translating it is a new revision of the set, not an edit.
 
-Los documentos de `docs/plan/` forman el conjunto **DC-DOCSET-0.3.0** y están protegidos por hashes en [DOCUMENTOS_CANONICOS.json](docs/plan/DOCUMENTOS_CANONICOS.json). No los edites de forma incidental ni regeneres los hashes para validar una copia: un cambio intencional exige revisión del manifiesto y de la versión del conjunto.
+Anything you write in another language will be asked to be translated before merge.
+
+## Before opening a PR
+
+1. Find the parent issue or the increment in the **Issues** tab. `L`-sized issues are worked through increments, never as a single PR.
+2. Check the blocking decisions and dependencies in [DECISIONES_Y_COBERTURA.md](docs/plan/DECISIONES_Y_COBERTURA.md) and [ROADMAP.md](docs/plan/ROADMAP.md).
+3. If the issue is not ready yet, say so in the issue before writing code.
+
+## Flow
+
+- `main` is protected: **changes only land through a pull request**. No direct pushes, force pushes or branch deletion.
+- Create a short, descriptive branch, for example `dc-007-rust-base`.
+- A PR must include: what changes, which issue it closes or references (`Closes #N`), how it was tested and which limits remain.
+- Acceptance is demonstrated with executed evidence: command or scenario, versions and environment, result and artifact. Code inspection does not replace a behaviour test.
+- No capability is announced as available if it has only passed stubs or simulated tests; the plan distinguishes `contract_tested`, `integration_verified` and `production_ready`.
+
+## Commits
+
+Use [Conventional Commits](https://www.conventionalcommits.org/) in English, imperative mood, lower case:
+
+```
+feat(parser): resolve relative imports across worktrees
+fix(sqlite): keep snapshots consistent on interrupted migrations
+docs: publish the canonical document set
+```
+
+## Canonical documentation
+
+The documents in `docs/plan/` form the **DC-DOCSET-0.3.0** set and are protected by hashes in [DOCUMENTOS_CANONICOS.json](docs/plan/DOCUMENTOS_CANONICOS.json). Do not edit them incidentally or regenerate the hashes to validate a copy: an intentional change requires a manifest review and a new version of the set.
