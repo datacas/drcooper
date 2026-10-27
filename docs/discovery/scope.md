@@ -8,16 +8,20 @@ One installable local-first engine (Rust, CLI and MCP) for Codex, Claude Code an
 
 ## Capabilities by commitment
 
+`Essential`: needed for the first replacement decision. `Committed`: a roadmap milestone with its own exit gate, delivered after it. `Experiment`: optional or conditional; may be dropped without failing a milestone.
+
 | Class | Capability | Release | Why |
 |---|---|---|---|
 | Essential | CLI/MCP adapters, canonical identity, SQLite, safe execution, memory, recovery, minimal Bench | R1 | Without these nothing can replace the current tools or be measured |
 | Essential | Zero-Maintenance Installation contract: install, connect three agents, uninstall, reinstall, update, fail, recover | R1 | The main pain of §2.1 |
 | Essential | Managed LSP/AST, safe edits, documentation, structural memory consolidation | R2 | Core day-to-day flows F-01, F-02, F-07 |
 | Essential | Deterministic KEE without any AI provider | R4 | Engine must work offline and without keys |
-| Experiment | Code graph beyond essential relations | R3 | Utility must be shown before widening (`ROADMAP.md`) |
+| Committed | Essential code graph: incremental, impact, timeline, obsolescence | R3 | Roadmap milestone with its own exit gate; utility must be shown before widening |
+| Committed | Learning governance: patterns, inbox, feedback, review on code changes | R5 | Roadmap milestone; exit gate is no self-applied policy outside its level |
+| Committed | Distribution: verifiable packages and channels, TUI, assisted memory migration | R6 | Roadmap milestone; the pilot decides replacement per flow |
+| Experiment | Code graph relation types beyond the essential ones | R3 | Added only after utility is demonstrated (`ROADMAP.md`) |
 | Experiment | Optional LLM and JEV adapters, validated with doubles first | R4 | Always optional and independent; real integration only if available and authorised |
-| Experiment | Learning governance, inbox, JEV as experimental classifier | R5 | Out of the first replacement decision |
-| Experiment | TUI, remote update channels, assisted memory migration, multi-platform packages | R6 | Distribution maturity, after the pilot shows value |
+| Experiment | JEV as experimental classifier | R5 | Explicitly experimental in the roadmap; out of the first replacement decision |
 
 R1, R4 and R6 are the deliveries the issue asks to review:
 
