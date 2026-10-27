@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "document_set_id": "DC-DOCSET-0.3.0",
+  "document_set_version": "0.3.0",
+  "date": "2026-10-26",
+  "status": "documentation_only_no_implementation",
+  "path_base": "repository_root",
+  "hash_algorithm": "sha256",
+  "hash_scope": "exact_file_bytes",
+  "self_included": false,
+  "trust_note": "Compare against a trusted copy of this manifest. Hashes detect changes, not authenticity. Intentional edits require a reviewed revision; never regenerate silently to certify an unknown package.",
+  "master_specification": {
+    "path": "drcooper_ESPECIFICACION_MAESTRA.md",
+    "version": "0.3.0"
+  },
+  "planning_counts": {
+    "parent_issues": 52,
+    "large_containers": 23,
+    "subtasks": 69,
+    "expanded_assignments": 98
+  },
+  "revision_note": "Per-document revision identifies membership in this document set. AUDITORIA_CAMBIOS.md preserves the first audit's historical references to specification 0.2.0; it is not the current master specification.",
+  "excluded_export_aliases": [
+    "README(1).md",
+    "ISSUES(1).md",
+    "ROADMAP(1).md",
+    "DECISIONES_Y_COBERTURA(1).md",
+    "NEXUM_ESPECIFICACION_MAESTRA.md"
+  ],
+  "documents": [
+    {
+      "path": "brief_identidad.md",
+      "revision": "0.3.0",
+      "role": "supporting_reference",
+      "bytes": 5061,
+      "sha256": "2ee9c545a3b6b0284146a53c0c56348a86a9803a3bcc5757b408500d7ebe9460"
+    },
+    {
+      "path": "drcooper_ESPECIFICACION_MAESTRA.md",
+      "revision": "0.3.0",
+      "role": "current",
+      "bytes": 52832,
+      "sha256": "fa71a5612d044f469767d19b48a76c42fb9686eec38988fa3504675f294a44f6"
+    },
+    {
+      "path": "docs/plan/AUDITORIA_CAMBIOS.md",
+      "revision": "0.3.0",
+      "role": "historical_record",
+      "bytes": 8649,
+      "sha256": "3fdd38767788a8e9712fe9001bea5f28e68a85473486e61ec510b880504f2157"
+    },
+    {
+      "path": "docs/plan/AUDITORIA_SEGUNDA.md",
+      "revision": "0.3.0",
+      "role": "current",
+      "bytes": 6183,
+      "sha256": "a5948fa9cf533cfc32a5e1008ddc777ee7cad970ca94756358231e701be6722e"
+    },
+    {
+      "path": "docs/plan/BENCHMARKS.md",
+      "revision": "0.3.0",
+      "role": "current",
+      "bytes": 16506,
+      "sha256": "11461214ec95d90a12c7226992121b0f3562d4f20a0adefc2c524994e00504f4"
+    },
+    {
+      "path": "docs/plan/DECISIONES_Y_COBERTURA.md",
+      "revision": "0.3.0",
+      "role": "current",
+      "bytes": 14356,
+      "sha256": "27a8a6ddc83836d61f352adf23ef1eb3eebe6b1fd2cafc0f4829829cfcc560d5"
+    },
+    {
+      "path": "docs/plan/INCREMENTOS.md",
+      "revision": "0.3.0",
+      "role": "current",
+      "bytes": 13632,
+      "sha256": "d6c8d8cd7f8707643496d4c5b3ec5909aaae91514957e52b75aae89f86088659"
+    },
+    {
+      "path": "docs/plan/ISSUES.md",
+      "revision": "0.3.0",
+      "role": "current",
+      "bytes": 55968,
+      "sha256": "e4da0ea7a96dcc101f0dccdabc74ebf5e444752189ce1bfc07d0ee223b5984c4"
+    },
+    {
+      "path": "docs/plan/README.md",
+      "revision": "0.3.0",
+      "role": "current",
+      "bytes": 6669,
+      "sha256": "fe236424be374aeee6e65895c5e0a3354153997aaafa1b4b49e532f2678f9509"
+    },
+    {
+      "path": "docs/plan/ROADMAP.md",
+      "revision": "0.3.0",
+      "role": "current",
+      "bytes": 13483,
+      "sha256": "387fdd51b815dbcce90d303a1173659112e7236b578147511a2d4cdabb19c183"
+    }
+  ]
+}

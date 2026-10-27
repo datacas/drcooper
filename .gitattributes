@@ -1,0 +1,3 @@
+# El conjunto canónico se publica byte a byte: sus hashes SHA-256 están en
+# docs/plan/DOCUMENTOS_CANONICOS.json. No normalizar finales de línea.
+* -text
