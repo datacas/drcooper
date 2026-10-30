@@ -1,0 +1,1 @@
+{ "compilerOptions": { "strict": true, "target": "ES2020", "module": "ESNext", "moduleResolution": "Bundler", "composite": true, "allowImportingTsExtensions": true, "paths": { "@dc/shared": ["./packages/shared/src/index.ts"] } } }

@@ -1,0 +1,1 @@
+{ "name": "dc-fixture/php-cli", "require": { "php": ">=7.0", "dc-fixture/php-lib": "*" }, "repositories": [{ "type": "path", "url": "../../packages/php-lib" }] }

@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "status": "materialized_not_executed",
+  "SYN-PHP": {
+    "resolved_edges": [
+      { "from": "workspace/apps/php-cli/main.php", "to": "workspace/packages/php-lib/src/Price.php#DcFixture\\Price" }
+    ],
+    "unresolved_edges": [
+      { "site": "workspace/apps/php-cli/main.php:call_user_func", "reason": "dynamic_callable" }
+    ],
+    "rename_safe_guarantee": false
+  },
+  "SYN-TSJS": {
+    "definition": "workspace/packages/shared/src/price.ts#formatPrice",
+    "reference_files": [
+      "workspace/packages/shared/src/index.ts",
+      "workspace/apps/ts-client/src/main.ts",
+      "workspace/apps/js-client/main.js"
+    ],
+    "rename_updates_only": ["price.ts", "index.ts", "main.ts", "main.js"],
+    "note": "js-client imports a .ts path directly; it is a JS consumer edge, not a TS project reference."
+  },
+  "SYN-PY": {
+    "direct_edges": [
+      { "from": "workspace/apps/python-cli/main.py", "to": "workspace/packages/python-lib/src/dc_fixture/price.py#format_price" }
+    ],
+    "ambiguous": [
+      { "site": "workspace/apps/python-cli/main.py:from dc_fixture import format_price", "candidates": ["price.py", "extras.py"], "reason": "star_export_shadowing" }
+    ],
+    "environment_oracle": "apps/python-cli declares dc-fixture-missing-dep; installing it in packages/python-lib must not satisfy it."
+  },
+  "SYN-WT": {
+    "construction": "git init a disposable repo from workspace/, branch case-a and case-b with different formatPrice/format_price output, add two linked worktrees.",
+    "expect": "one canonical repo identity, two worktree scopes; queries in case-a never return case-b revisions as current."
+  },
+  "FAIL-PHP": { "modes": { "missing": "nonexistent executable path", "crash": "stubs/exit.sh", "timeout": "stubs/timeout.sh" }, "expect": "distinct unavailable/crashed/timeout statuses; semantic coverage advertised as unavailable; non-semantic capabilities still respond." },
+  "FAIL-TSJS": { "modes": { "missing": "nonexistent executable path", "crash": "stubs/exit.sh", "timeout": "stubs/timeout.sh", "tsserver_dependency_missing": "dependency tree without a tsserver entry point" }, "expect": "explicit dependency/provider error; tsc presence never yields complete semantic success." },
+  "FAIL-PY": { "modes": { "missing": "nonexistent executable path", "crash": "stubs/exit.sh", "timeout": "stubs/timeout.sh", "environment_mismatch": "apps/python-cli imports dc-fixture-missing-dep" }, "expect": "launch failure separated from valid-server unresolved import; coverage marked incomplete." },
+  "SYN-MEM": { "expect": { "current_scope_a": ["M-2", "M-3"], "superseded": ["M-1"], "scope_b_not_returned_for_scope_a": true, "literal_conserved": "Never upgrade Alpha beyond 2.4.1." } },
+  "SYN-OPS": { "stubs": ["stubs/exit.sh", "stubs/timeout.sh", "stubs/malformed.py"], "expect": "exit code and stderr retained; malformed frame reported; no duplicate write on reconnect; absence never scored as success." }
+}
