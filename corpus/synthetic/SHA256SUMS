@@ -4,12 +4,11 @@ ebc95446e4ba8cffb6b2c51f0148fa3ec645946d49fbf7e20b1ac570a7f7f837  ./oracles.json
 9a37b5d579bdad567998dd1222dbe4ed76f3f3a4746d4b68e5cf27f74128ee06  ./stubs/exit.sh
 936e9ac01286fc47c9d1831e80eb03e34926c1ce969a0ee88a1b888411062f00  ./stubs/malformed.py
 3db49e296a91dc5b86e42636082b42ea443d79641eb73c1a7abba70838561c4f  ./stubs/timeout.sh
-ae5ce9e09d8673b2cadb131c6af89462f80a5e4f44f85dec1eb1cf823500bad4  ./workspace/.gitignore
+d23d9959c3ed253c6d826b56b2e79ad6f49ee51d09421480d49bfc01ac7de758  ./workspace/.gitignore
 f3ff370e96ec415b5f2ad4ec178e21e597b22383de4fe3d4353c0057349a0caa  ./workspace/apps/js-client/main.js
 0497f1a3f89dc46bfec7f841a05bce74591fcb343f3c201589e5aa8e0dcd5c57  ./workspace/apps/js-client/package.json
 504384be12dd28b98428f8b46f6eb8bcd62ec0a577367cbbb5e206ae3cfc0e4b  ./workspace/apps/php-cli/composer.json
 e7003186e3e8d2e4c619fe58611cdc86ac7131f87c7bdf55cd91f54578a65805  ./workspace/apps/php-cli/main.php
-c89c7ec60e79341f8a38a5bafa16b8f75b11d6a3692dbc93bfd175f951345712  ./workspace/apps/python-cli/__pycache__/main.cpython-310.pyc
 b1acc5f068e612da61eaf0044f3196b6498f548d4bbc036b88e4ac749b8866e9  ./workspace/apps/python-cli/main.py
 0732da4c1f976f0651669039c8632ebe335e66a2721cb531be5e6f45398c5657  ./workspace/apps/python-cli/pyproject.toml
 ff11014e2de58c6147f790ac72e7c22e53ed968db866f8db9bb5f7c3ee7dc338  ./workspace/apps/ts-client/package.json
@@ -20,9 +19,6 @@ cd0683c450069d9c8f6c3353a64ac8cae1e9db35e8bd78b24b5382869f7e6a9f  ./workspace/ap
 9f6309fde7fa65ef38a3ac30457c75f8b7ff71103c21dc24966050767019da09  ./workspace/packages/php-lib/src/Price.php
 42fb17bfe0e4bb26de2b1a56eaea56b7f925222ad91f0b3f3c540fed745609bc  ./workspace/packages/python-lib/pyproject.toml
 5e1808aea1f0c78eaa08e38b9742c08f2c4aeb4a6fa0243377fc3977a2e956f7  ./workspace/packages/python-lib/src/dc_fixture/__init__.py
-625de5dc6a5d7208e54ab00a1a2e3321bfc64a06a4bb11cb5db4aaa7bcf148f2  ./workspace/packages/python-lib/src/dc_fixture/__pycache__/__init__.cpython-310.pyc
-26947c955b9e1e80e0a17b32c99cca3d4e6c6a3a4b48923ffae97ea239a6339d  ./workspace/packages/python-lib/src/dc_fixture/__pycache__/extras.cpython-310.pyc
-cd244ec339a44fae7679bdf437ddb5878b5099a40db47ac86d710f4a3ca27f47  ./workspace/packages/python-lib/src/dc_fixture/__pycache__/price.cpython-310.pyc
 891d994694c4e4017960704a24f48baa10cbb9fc6441d77b19014934acbd36bb  ./workspace/packages/python-lib/src/dc_fixture/extras.py
 f83d1142b6570eab65db638bcf3f818eb19aece4faa5488ecbe8b84625839cd8  ./workspace/packages/python-lib/src/dc_fixture/price.py
 89b2eb369c4238da28fb411f872e511bddcdd2386944958b82234cee01aac5b7  ./workspace/packages/shared/package.json
