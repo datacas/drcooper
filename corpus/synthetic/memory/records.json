@@ -1,0 +1,8 @@
+{
+  "records": [
+    { "id": "M-1", "scope": "scope-a", "kind": "decision", "date": "2026-01-10", "text": "Use library Alpha for rendering.", "supersedes": null },
+    { "id": "M-2", "scope": "scope-a", "kind": "constraint", "date": "2026-01-10", "text": "Never upgrade Alpha beyond 2.4.1.", "supersedes": null },
+    { "id": "M-3", "scope": "scope-a", "kind": "decision", "date": "2026-03-02", "text": "Replace Alpha with library Beta for rendering.", "supersedes": "M-1" },
+    { "id": "M-4", "scope": "scope-b", "kind": "decision", "date": "2026-02-01", "text": "Use library Gamma for rendering.", "supersedes": null }
+  ]
+}
