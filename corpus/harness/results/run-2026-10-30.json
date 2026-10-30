@@ -1,0 +1,416 @@
+{
+  "schema_version": 1,
+  "issue": "DC-001",
+  "subject": "synthetic corpus only; DrCooper not executed",
+  "base_commit": "77096881d8d43cf9f748a049f745823e222cdf0e",
+  "environment": {
+    "os": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+    "python": "3.10.12"
+  },
+  "duration_s": 24.8,
+  "summary": {
+    "pass": 28,
+    "fail": 0,
+    "observed": 4
+  },
+  "checks": [
+    {
+      "scenario": "SYN-PHP",
+      "check": "PHP syntax valid and CLI resolves the imported class at runtime",
+      "result": "pass",
+      "expected": "php -l rc 0 twice; first output line '12.50 EUR'",
+      "observed": {
+        "php": "PHP 7.4.33 (cli) (built: Feb 13 2026 15:55:10) ( NTS )",
+        "lint_rc": [
+          0,
+          0
+        ],
+        "out": [
+          "12.50 EUR"
+        ]
+      }
+    },
+    {
+      "scenario": "SYN-PHP",
+      "check": "dynamic call site present and must stay unresolved (oracle input)",
+      "result": "pass",
+      "expected": "dynamic callable in main.php",
+      "observed": "present"
+    },
+    {
+      "scenario": "SYN-TSJS",
+      "check": "tsc -b resolves path alias and project reference",
+      "result": "pass",
+      "expected": "rc 0",
+      "observed": {
+        "tsc": "Version 7.0.2",
+        "rc": 0,
+        "out": ""
+      }
+    },
+    {
+      "scenario": "SYN-TSJS",
+      "check": "JS consumer imports the TS source and runs",
+      "result": "pass",
+      "expected": "3.00 USD",
+      "observed": {
+        "node": "v22.23.2",
+        "out": "3.00 USD"
+      }
+    },
+    {
+      "scenario": "SYN-TSJS",
+      "check": "textual reference set equals the oracle file set (sanity check, not a semantic result)",
+      "result": "pass",
+      "expected": [
+        "apps/js-client/main.js",
+        "apps/ts-client/src/main.ts",
+        "packages/shared/src/index.ts",
+        "packages/shared/src/price.ts"
+      ],
+      "observed": [
+        "apps/js-client/main.js",
+        "apps/ts-client/src/main.ts",
+        "packages/shared/src/index.ts",
+        "packages/shared/src/price.ts"
+      ]
+    },
+    {
+      "scenario": "SYN-PY",
+      "check": "valid server, unresolved import: reportMissingImports without an environment",
+      "result": "pass",
+      "expected": "2 reportMissingImports (dc_fixture, dc_fixture.price)",
+      "observed": {
+        "basedpyright": "basedpyright 1.40.2",
+        "count": 2
+      }
+    },
+    {
+      "scenario": "SYN-PY",
+      "check": "extraPaths for the library package resolves the imports",
+      "result": "pass",
+      "expected": "0 reportMissingImports",
+      "observed": 0
+    },
+    {
+      "scenario": "SYN-PY",
+      "check": "star export shadowing: which file the server picks for format_price (ambiguity oracle input)",
+      "result": "observed",
+      "expected": "ambiguous between price.py and extras.py; no guaranteed single answer",
+      "observed": [
+        {
+          "uri": "file://<tmp>/py/packages/python-lib/src/dc_fixture/extras.py",
+          "range": {
+            "start": {
+              "line": 0,
+              "character": 4
+            },
+            "end": {
+              "line": 0,
+              "character": 16
+            }
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "SYN-PY",
+      "check": "separate environment descriptors; the CLI declares a dependency the library does not",
+      "result": "pass",
+      "expected": "dependency only in apps/python-cli",
+      "observed": "as expected"
+    },
+    {
+      "scenario": "SYN-WT",
+      "check": "one canonical repository identity across main checkout and both worktrees",
+      "result": "pass",
+      "expected": "1 distinct git-common-dir",
+      "observed": 1
+    },
+    {
+      "scenario": "SYN-WT",
+      "check": "three distinct scopes, branches case-a and case-b",
+      "result": "pass",
+      "expected": {
+        "scopes": 3,
+        "branches": [
+          "case-a",
+          "case-b"
+        ]
+      },
+      "observed": {
+        "scopes": 3,
+        "branches": [
+          "case-a",
+          "case-b"
+        ]
+      }
+    },
+    {
+      "scenario": "SYN-WT",
+      "check": "same relative symbols, different values per worktree, in PHP, TS/JS and Python",
+      "result": "pass",
+      "expected": "[a] in wt-a, [b] in wt-b for each language",
+      "observed": {
+        "wt-a": {
+          "php": [
+            "12.50 EUR [a]"
+          ],
+          "ts_js": [
+            "3.00 USD [a]"
+          ],
+          "py": [
+            "3.00 USD [a]"
+          ]
+        },
+        "wt-b": {
+          "php": [
+            "12.50 EUR [b]"
+          ],
+          "ts_js": [
+            "3.00 USD [b]"
+          ],
+          "py": [
+            "3.00 USD [b]"
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "SYN-WT",
+      "check": "no case-b revision visible from the case-a worktree",
+      "result": "pass",
+      "expected": "no match",
+      "observed": "no match"
+    },
+    {
+      "scenario": "SYN-WT",
+      "check": "moved worktree path keeps the canonical identity and its branch content",
+      "result": "pass",
+      "expected": "same git-common-dir, listed at new path, content [b]",
+      "observed": true
+    },
+    {
+      "scenario": "SYN-WT",
+      "check": "concurrent read/write schedule (2 x 60 iterations) leaks nothing across worktrees",
+      "result": "pass",
+      "expected": "0 violations; each worktree dirty only with its own scratch.txt",
+      "observed": {
+        "violations": 0,
+        "status": [
+          "?? scratch.txt",
+          "?? scratch.txt"
+        ]
+      }
+    },
+    {
+      "scenario": "SYN-OPS",
+      "check": "stub mode 'missing' is classified distinctly",
+      "result": "pass",
+      "expected": "missing",
+      "observed": "missing",
+      "detail": {}
+    },
+    {
+      "scenario": "SYN-OPS",
+      "check": "stub mode 'crashed' is classified distinctly",
+      "result": "pass",
+      "expected": "crashed",
+      "observed": "crashed",
+      "detail": {
+        "rc": 7,
+        "stderr": "DC_STUB_ERROR provider crashed\n"
+      }
+    },
+    {
+      "scenario": "SYN-OPS",
+      "check": "stub mode 'timeout' is classified distinctly",
+      "result": "pass",
+      "expected": "timeout",
+      "observed": "timeout",
+      "detail": {
+        "rc": null,
+        "stderr": ""
+      }
+    },
+    {
+      "scenario": "SYN-OPS",
+      "check": "stub mode 'malformed' is classified distinctly",
+      "result": "pass",
+      "expected": "malformed",
+      "observed": "malformed",
+      "detail": {
+        "rc": 0,
+        "stderr": ""
+      }
+    },
+    {
+      "scenario": "SYN-OPS",
+      "check": "timed-out stub process group is gone after the kill",
+      "result": "pass",
+      "expected": "no process",
+      "observed": "no process"
+    },
+    {
+      "scenario": "FAIL-PHP",
+      "check": "synthetic provider profile: missing, crash, timeout and malformed are four distinct statuses",
+      "result": "pass",
+      "expected": [
+        "missing",
+        "crashed",
+        "timeout",
+        "malformed"
+      ],
+      "observed": {
+        "missing": "missing",
+        "crashed": "crashed",
+        "timeout": "timeout",
+        "malformed": "malformed"
+      }
+    },
+    {
+      "scenario": "FAIL-TSJS",
+      "check": "synthetic provider profile: missing, crash, timeout and malformed are four distinct statuses",
+      "result": "pass",
+      "expected": [
+        "missing",
+        "crashed",
+        "timeout",
+        "malformed"
+      ],
+      "observed": {
+        "missing": "missing",
+        "crashed": "crashed",
+        "timeout": "timeout",
+        "malformed": "malformed"
+      }
+    },
+    {
+      "scenario": "FAIL-PY",
+      "check": "synthetic provider profile: missing, crash, timeout and malformed are four distinct statuses",
+      "result": "pass",
+      "expected": [
+        "missing",
+        "crashed",
+        "timeout",
+        "malformed"
+      ],
+      "observed": {
+        "missing": "missing",
+        "crashed": "crashed",
+        "timeout": "timeout",
+        "malformed": "malformed"
+      }
+    },
+    {
+      "scenario": "FAIL-PHP",
+      "check": "real PHP language server executables are absent from PATH (provider missing, observed)",
+      "result": "observed",
+      "expected": "intelephense/phpactor/psalm not on PATH",
+      "observed": {
+        "intelephense": false,
+        "phpactor": false,
+        "psalm": false
+      }
+    },
+    {
+      "scenario": "FAIL-TSJS",
+      "check": "the global compiler directory has no tsserver entry point (dependency class, observed)",
+      "result": "observed",
+      "expected": "no tsserver.js beside the tsc resolved from PATH",
+      "observed": {
+        "tsc_version": "Version 7.0.2",
+        "tsserver_js_present": [
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "scenario": "FAIL-TSJS",
+      "check": "real typescript-language-server: definition of formatPrice with its default tsserver",
+      "result": "observed",
+      "expected": "definition resolves to packages/shared/src/price.ts or an explicit provider error",
+      "observed": {
+        "version": "6.0.2",
+        "stage": "initialize",
+        "response": {
+          "jsonrpc": "2.0",
+          "id": 1,
+          "error": {
+            "code": -32603,
+            "message": "Request initialize failed with message: Could not find a valid TypeScript installation. Please ensure that the \"typescript\" dependency is installed in the workspace or that a valid `tsserver.path` is specified. Exiting."
+          }
+        },
+        "stderr": ""
+      }
+    },
+    {
+      "scenario": "FAIL-TSJS",
+      "check": "tsserver entry point missing: no complete semantic success is reported",
+      "result": "pass",
+      "expected": "explicit error, timeout, disconnect or empty result; never a definition",
+      "observed": {
+        "stage": "initialize",
+        "response": {
+          "jsonrpc": "2.0",
+          "id": 1,
+          "error": {
+            "code": -32603,
+            "message": "Request initialize failed with message: Could not find a valid TypeScript installation. Please ensure that the \"typescript\" dependency is installed in the workspace or that a valid `tsserver.path` is specified. Exiting."
+          }
+        },
+        "stderr": ""
+      }
+    },
+    {
+      "scenario": "SYN-TSJS",
+      "check": "cross-package definition of formatPrice from apps/ts-client/src/main.ts with tsserver 5.7.3",
+      "result": "pass",
+      "expected": [
+        "<ws>/packages/shared/src/price.ts"
+      ],
+      "observed": [
+        "<ws>/packages/shared/src/price.ts"
+      ]
+    },
+    {
+      "scenario": "SYN-TSJS",
+      "check": "cross-package definition of formatPrice from apps/js-client/main.js with tsserver 5.7.3",
+      "result": "pass",
+      "expected": [
+        "<ws>/packages/shared/src/price.ts"
+      ],
+      "observed": [
+        "<ws>/packages/shared/src/price.ts"
+      ]
+    },
+    {
+      "scenario": "FAIL-PY",
+      "check": "launch failure (missing executable) is separate from a valid server's unresolved import",
+      "result": "pass",
+      "expected": "missing",
+      "observed": "missing"
+    },
+    {
+      "scenario": "SYN-MEM",
+      "check": "records yield the oracle's current set for scope-a and keep scopes separate",
+      "result": "pass",
+      "expected": [
+        "M-2",
+        "M-3"
+      ],
+      "observed": [
+        "M-2",
+        "M-3"
+      ]
+    },
+    {
+      "scenario": "SYN-MEM",
+      "check": "literal constraint present verbatim in the records",
+      "result": "pass",
+      "expected": "Never upgrade Alpha beyond 2.4.1.",
+      "observed": "found"
+    }
+  ]
+}

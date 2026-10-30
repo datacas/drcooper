@@ -2,7 +2,7 @@
   "schema_version": 1,
   "issue": "DC-001",
   "selection_date": "2026-10-27",
-  "status": "public_sources_pinned_synthetic_fixtures_materialized_not_executed",
+  "status": "public_sources_pinned_synthetic_fixtures_executed_without_drcooper",
   "maintainer_validation": {
     "status": "pending_independent_corpus_evidence",
     "approved_by_functional_scope_confirmation": false,
@@ -132,6 +132,15 @@
     "fixture_root": "corpus/synthetic",
     "oracles": "technical-discovery.md#proposed-synthetic-corpus-authored-independently"
   },
-  "executed_corpus_runs": [],
+  "executed_corpus_runs": [
+    {
+      "date": "2026-10-30",
+      "harness": "corpus/harness/run_corpus.py",
+      "results": "corpus/harness/results/run-2026-10-30.json",
+      "subject": "synthetic corpus and real language servers; DrCooper not executed",
+      "summary": { "pass": 28, "fail": 0, "observed": 4 },
+      "limits": ["no PHP language server installed", "no DrCooper component executed", "rename safety not exercised"]
+    }
+  ],
   "benchmark_metrics": null
 }
