@@ -146,7 +146,7 @@
       "harness": "corpus/harness/run_corpus.py",
       "results": "corpus/harness/results/run-2026-10-31.json",
       "subject": "adds rename safety, php-lsp semantics and local operational stubs; DrCooper not executed",
-      "summary": { "pass": 44, "fail": 0, "observed": 7 },
+      "summary": { "pass": 48, "fail": 0, "observed": 7 },
       "limits": ["no DrCooper component executed", "retry policy of a real client not exercised", "alternative PHP servers not installed"]
     }
   ],

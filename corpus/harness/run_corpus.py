@@ -20,6 +20,7 @@ import threading
 import time
 import urllib.error
 import urllib.request
+from urllib.parse import unquote, urlparse
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
@@ -247,22 +248,38 @@ def lsp_rename(cmd, root, rel_file, lang_id, line, char, new_name, init_options=
         srv.close()
 
 
+def edit_target(uri, root):
+    """Maps a provider-supplied file URI to a path inside root, or raises ValueError before anything is touched."""
+    parsed = urlparse(uri)
+    if parsed.scheme != "file" or parsed.netloc not in ("", "localhost"):
+        raise ValueError("workspace edit target is not a local file URI: %r" % uri)
+    path = Path(unquote(parsed.path)).resolve()
+    root = Path(root).resolve()
+    if root != path and root not in path.parents:
+        raise ValueError("workspace edit target is outside the disposable root: %r" % uri)
+    return path
+
+
 def apply_workspace_edit(edit, root):
-    """Applies a WorkspaceEdit (changes or documentChanges) and returns the changed relative paths."""
+    """Applies a WorkspaceEdit (changes or documentChanges) inside root and returns the changed relative paths.
+
+    Every target is validated before any file is read or written, so a rejected edit changes nothing.
+    """
     changes = dict(edit.get("changes") or {})
     for dc in edit.get("documentChanges") or []:
         if "textDocument" in dc:
             changes.setdefault(dc["textDocument"]["uri"], []).extend(dc["edits"])
+    targets = {uri: edit_target(uri, root) for uri in changes}
     changed = []
     for uri, edits in changes.items():
-        path = Path(uri[len("file://"):])
+        path = targets[uri]
         lines = path.read_text().split("\n")
         for e in sorted(edits, key=lambda e: (e["range"]["start"]["line"], e["range"]["start"]["character"]), reverse=True):
             a, b = e["range"]["start"], e["range"]["end"]
             head, tail = lines[a["line"]][:a["character"]], lines[b["line"]][b["character"]:]
             lines[a["line"]:b["line"] + 1] = (head + e["newText"] + tail).split("\n")
         path.write_text("\n".join(lines))
-        changed.append(str(path.relative_to(root)))
+        changed.append(str(path.relative_to(Path(root).resolve())))
     return sorted(changed)
 
 
@@ -678,6 +695,33 @@ def ops_stubs():
            "rc 7; stderr '<redacted>'", {"rc": leaked["rc"], "stderr": redacted})
 
 
+def edit_containment():
+    base = TMP_ROOT / "containment"
+    root, outside = base / "root", base / "outside.txt"
+    root.mkdir(parents=True)
+    inside = root / "inside.txt"
+    inside.write_text("old")
+    outside.write_text("old")
+
+    def edit_for(path):
+        return {"changes": {path.as_uri(): [{"range": {"start": {"line": 0, "character": 0}, "end": {"line": 0, "character": 3}}, "newText": "new"}]}}
+
+    for label, edit in (("a file outside the root", {"changes": {**edit_for(inside)["changes"], **edit_for(outside)["changes"]}}),
+                        ("a non-file URI", {"changes": {"https://example.invalid/x": []}}),
+                        ("a path that escapes through '..'", edit_for(root / ".." / "outside.txt"))):
+        try:
+            apply_workspace_edit(edit, root)
+            rejected = False
+        except ValueError:
+            rejected = True
+        untouched = outside.read_text() == "old" and inside.read_text() == "old"
+        record("HARNESS", "a workspace edit naming %s is rejected before any file changes" % label,
+               "pass" if rejected and untouched else "fail", "ValueError; inside and outside files unchanged",
+               {"rejected": rejected, "files_unchanged": untouched})
+    apply_workspace_edit(edit_for(inside), root)
+    record("HARNESS", "a workspace edit inside the root is still applied", "pass" if inside.read_text() == "new" else "fail", "new", inside.read_text())
+
+
 def syn_mem():
     data = json.loads((SYN / "memory/records.json").read_text())["records"]
     superseded = {r["supersedes"] for r in data if r["supersedes"]}
@@ -693,7 +737,7 @@ def syn_mem():
 def main():
     out = Path(sys.argv[1]) if len(sys.argv) > 1 else None
     started = time.time()
-    steps = (syn_php, syn_tsjs, syn_py, syn_wt, fail_modes, real_providers, rename_safety, php_semantics, ops_stubs, syn_mem)
+    steps = (syn_php, syn_tsjs, syn_py, syn_wt, fail_modes, real_providers, edit_containment, rename_safety, php_semantics, ops_stubs, syn_mem)
     try:
         for step in steps:
             step()

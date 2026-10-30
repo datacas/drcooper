@@ -2,14 +2,14 @@
   "schema_version": 1,
   "issue": "DC-001",
   "subject": "synthetic corpus only; DrCooper not executed",
-  "base_commit": "80b047ea6d936e1da00373925d938934f34bc48e",
+  "base_commit": "ed01f3742699355e59f73d57c38d82b6ccc15b84",
   "environment": {
     "os": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.35",
     "python": "3.10.12"
   },
-  "duration_s": 54.0,
+  "duration_s": 53.6,
   "summary": {
-    "pass": 44,
+    "pass": 48,
     "fail": 0,
     "observed": 7
   },
@@ -392,6 +392,43 @@
       "result": "pass",
       "expected": "missing",
       "observed": "missing"
+    },
+    {
+      "scenario": "HARNESS",
+      "check": "a workspace edit naming a file outside the root is rejected before any file changes",
+      "result": "pass",
+      "expected": "ValueError; inside and outside files unchanged",
+      "observed": {
+        "rejected": true,
+        "files_unchanged": true
+      }
+    },
+    {
+      "scenario": "HARNESS",
+      "check": "a workspace edit naming a non-file URI is rejected before any file changes",
+      "result": "pass",
+      "expected": "ValueError; inside and outside files unchanged",
+      "observed": {
+        "rejected": true,
+        "files_unchanged": true
+      }
+    },
+    {
+      "scenario": "HARNESS",
+      "check": "a workspace edit naming a path that escapes through '..' is rejected before any file changes",
+      "result": "pass",
+      "expected": "ValueError; inside and outside files unchanged",
+      "observed": {
+        "rejected": true,
+        "files_unchanged": true
+      }
+    },
+    {
+      "scenario": "HARNESS",
+      "check": "a workspace edit inside the root is still applied",
+      "result": "pass",
+      "expected": "new",
+      "observed": "new"
     },
     {
       "scenario": "SYN-TSJS",
