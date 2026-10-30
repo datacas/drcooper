@@ -2,7 +2,7 @@
   "schema_version": 1,
   "issue": "DC-001",
   "selection_date": "2026-10-27",
-  "status": "public_sources_pinned_synthetic_scenarios_specified_not_executed",
+  "status": "public_sources_pinned_synthetic_fixtures_materialized_not_executed",
   "maintainer_validation": {
     "status": "pending_independent_corpus_evidence",
     "approved_by_functional_scope_confirmation": false,
@@ -123,11 +123,13 @@
     {"id": "SYN-OPS", "languages": [], "covers": ["exit_and_stderr", "malformed_protocol", "disconnect", "rate_limit", "service_unavailable", "secret_sentinel"], "flows": ["F-03", "F-04", "F-07", "F-08", "F-09", "F-10", "F-11", "F-14"]}
   ],
   "synthetic_materialization": {
-    "status": "specified_only",
+    "status": "materialized_not_executed",
     "license_for_new_source": "MIT",
     "derived_from_private_code": false,
-    "fixture_commit": null,
-    "fixture_sha256": null,
+    "fixture_commit": "84338a6e50b864f9a8a2fbdde55fad6fafc67fbb",
+    "fixture_sha256": "1a695c430b8022cba9a4bd52b5a4aa3bdef52730625e979151521d98ab2562d3",
+    "fixture_sha256_of": "corpus/synthetic/SHA256SUMS",
+    "fixture_root": "corpus/synthetic",
     "oracles": "technical-discovery.md#proposed-synthetic-corpus-authored-independently"
   },
   "executed_corpus_runs": [],
