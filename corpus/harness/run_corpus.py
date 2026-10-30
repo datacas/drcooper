@@ -6,6 +6,7 @@ distinguishable. It does not run DrCooper, which does not exist yet.
 
 Usage: python3 -I corpus/harness/run_corpus.py [output.json]
 """
+import http.server
 import json
 import os
 import platform
@@ -17,6 +18,9 @@ import sys
 import tempfile
 import threading
 import time
+import urllib.error
+import urllib.request
+from urllib.parse import unquote, urlparse
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
@@ -217,6 +221,68 @@ def lsp_definition(cmd, root, rel_file, lang_id, line, char, init_options=None, 
         srv.close()
 
 
+def lsp_rename(cmd, root, rel_file, lang_id, line, char, new_name, init_options=None, timeout=25, also_open=()):
+    """initialize -> didOpen -> rename. Returns the server's WorkspaceEdit response."""
+    srv = Lsp(cmd, root)
+    try:
+        init = srv.request(1, "initialize", {"processId": None, "rootUri": Path(root).as_uri(),
+                                              "workspaceFolders": [{"uri": Path(root).as_uri(), "name": "root"}],
+                                              "capabilities": {"workspace": {"configuration": True, "workspaceFolders": True,
+                                                                              "workspaceEdit": {"documentChanges": False}}},
+                                              "initializationOptions": init_options or {}}, timeout)
+        if "result" not in init:
+            return {"stage": "initialize", "response": init}
+        srv.notify("initialized", {})
+        path = Path(root) / rel_file
+        srv.notify("textDocument/didOpen", {"textDocument": {"uri": path.as_uri(), "languageId": lang_id,
+                                                              "version": 1, "text": path.read_text()}})
+        for other, other_lang in also_open:
+            other_path = Path(root) / other
+            srv.notify("textDocument/didOpen", {"textDocument": {"uri": other_path.as_uri(), "languageId": other_lang,
+                                                                  "version": 1, "text": other_path.read_text()}})
+        srv.settle(8)
+        resp = srv.request(2, "textDocument/rename", {"textDocument": {"uri": path.as_uri()},
+                                                     "position": {"line": line, "character": char}, "newName": new_name}, timeout)
+        return {"stage": "rename", "response": resp}
+    finally:
+        srv.close()
+
+
+def edit_target(uri, root):
+    """Maps a provider-supplied file URI to a path inside root, or raises ValueError before anything is touched."""
+    parsed = urlparse(uri)
+    if parsed.scheme != "file" or parsed.netloc not in ("", "localhost"):
+        raise ValueError("workspace edit target is not a local file URI: %r" % uri)
+    path = Path(unquote(parsed.path)).resolve()
+    root = Path(root).resolve()
+    if root != path and root not in path.parents:
+        raise ValueError("workspace edit target is outside the disposable root: %r" % uri)
+    return path
+
+
+def apply_workspace_edit(edit, root):
+    """Applies a WorkspaceEdit (changes or documentChanges) inside root and returns the changed relative paths.
+
+    Every target is validated before any file is read or written, so a rejected edit changes nothing.
+    """
+    changes = dict(edit.get("changes") or {})
+    for dc in edit.get("documentChanges") or []:
+        if "textDocument" in dc:
+            changes.setdefault(dc["textDocument"]["uri"], []).extend(dc["edits"])
+    targets = {uri: edit_target(uri, root) for uri in changes}
+    changed = []
+    for uri, edits in changes.items():
+        path = targets[uri]
+        lines = path.read_text().split("\n")
+        for e in sorted(edits, key=lambda e: (e["range"]["start"]["line"], e["range"]["start"]["character"]), reverse=True):
+            a, b = e["range"]["start"], e["range"]["end"]
+            head, tail = lines[a["line"]][:a["character"]], lines[b["line"]][b["character"]:]
+            lines[a["line"]:b["line"] + 1] = (head + e["newText"] + tail).split("\n")
+        path.write_text("\n".join(lines))
+        changed.append(str(path.relative_to(Path(root).resolve())))
+    return sorted(changed)
+
+
 # --------------------------------------------------------------------- checks
 def copy_workspace(dst):
     shutil.copytree(WS, dst, ignore=shutil.ignore_patterns("__pycache__", "*.pyc", "dist", "*.tsbuildinfo"))
@@ -382,9 +448,9 @@ def fail_modes():
 
 
 def real_providers():
-    record("FAIL-PHP", "real PHP language server executables are absent from PATH (provider missing, observed)", "observed",
-           "intelephense/phpactor/psalm not on PATH",
-           {n: bool(shutil.which(n)) for n in ("intelephense", "phpactor", "psalm")})
+    record("FAIL-PHP", "PHP providers on PATH: the configured php-lsp is present; the alternatives are absent (provider missing, observed)", "observed",
+           "php-lsp present; intelephense, phpactor and psalm not on PATH",
+           {n: bool(shutil.which(n)) for n in ("php-lsp", "intelephense", "phpactor", "psalm")})
     tsc_real = Path(shutil.which("tsc")).resolve()
     candidates = [tsc_real.parent.parent / "lib" / "tsserver.js", tsc_real.parent / "tsserver.js"]
     record("FAIL-TSJS", "the global compiler directory has no tsserver entry point (dependency class, observed)", "observed",
@@ -423,6 +489,239 @@ def real_providers():
            "missing", missing)
 
 
+def rename_safety():
+    ts_server = sorted(Path.home().glob(".nvm/versions/node/*/lib/node_modules/typescript/lib/tsserver.js"))
+    expected = ["apps/js-client/main.js", "apps/ts-client/src/main.ts", "packages/shared/src/index.ts", "packages/shared/src/price.ts"]
+    if not ts_server:
+        record("SYN-TSJS", "rename in a disposable copy updates exactly the oracle files", "observed", expected, "no working tsserver found")
+    else:
+        server_opts = {"path": str(ts_server[0])}
+        consumers = (("apps/ts-client/src/main.ts", "typescript"), ("apps/js-client/main.js", "javascript"))
+        no_alias = {"providePrefixAndSuffixTextForRename": False}
+
+        def ts_rename(tag, prefs, also_open):
+            target = TMP_ROOT / ("rename-ts-" + tag)
+            copy_workspace(target)
+            got = lsp_rename(["typescript-language-server", "--stdio"], str(target), "packages/shared/src/price.ts", "typescript",
+                             5, 16, "formatMoney", init_options={"tsserver": server_opts, "preferences": prefs}, also_open=also_open)
+            edit = got["response"].get("result") if isinstance(got["response"], dict) else None
+            return target, (apply_workspace_edit(edit, target) if edit else got)
+
+        _, changed = ts_rename("default", {}, consumers)
+        record("SYN-TSJS", "rename with default preferences, consumers open: files changed (re-export keeps the public name via an alias)", "observed",
+               "no fixed oracle; default tsserver preserves the exported name, so consumers are not renamed", changed)
+        _, changed = ts_rename("closed", no_alias, ())
+        record("SYN-TSJS", "rename with providePrefixAndSuffixTextForRename=false but consumers not opened: files changed", "observed",
+               "no fixed oracle; project-reference consumers that are not loaded can be missed", changed)
+        work, changed = ts_rename("full", no_alias, consumers)
+        record("SYN-TSJS", "rename formatPrice -> formatMoney with alias text disabled and consumers open updates exactly the oracle files (disposable copy)",
+               "pass" if changed == expected else "fail", expected, changed)
+        build = run(["tsc", "-b", "apps/ts-client"], cwd=work, timeout=90)
+        js = run(["node", "--experimental-strip-types", "--no-warnings", "apps/js-client/main.js"], cwd=work)
+        record("SYN-TSJS", "after the rename the project still compiles and the JS consumer still runs",
+               "pass" if build["rc"] == 0 and js["out"].strip() == "3.00 USD" else "fail",
+               "tsc -b rc 0; node prints 3.00 USD", {"tsc_rc": build["rc"], "node": js["out"].strip(), "node_err": js["err"][:200]})
+
+    work = TMP_ROOT / "rename-py"
+    copy_workspace(work)
+    (work / "pyrightconfig.json").write_text(json.dumps({"extraPaths": ["packages/python-lib/src"]}))
+    got = lsp_rename(["basedpyright-langserver", "--stdio"], str(work), "packages/python-lib/src/dc_fixture/price.py", "python",
+                     0, 4, "format_money")
+    edit = got["response"].get("result") if isinstance(got["response"], dict) else None
+    changed = apply_workspace_edit(edit, work) if edit else []
+    record("SYN-PY", "rename format_price in price.py: files the server changes (star export makes the answer ambiguous)", "observed",
+           "no fixed oracle; ambiguous star export must not be reported as a safe complete rename", changed or got)
+
+    work = TMP_ROOT / "rename-php"
+    copy_workspace(work)
+    for rel in ("packages/php-lib/src/Price.php", "apps/php-cli/main.php"):
+        path = work / rel
+        text = path.read_text().replace("function format()", "function render()").replace("->format()", "->render()")
+        path.write_text(text)
+    after = run(["php", "-d", "display_errors=1", "apps/php-cli/main.php"], cwd=work)
+    broken = "call_user_func" in (after["out"] + after["err"]) and "valid callback" in (after["out"] + after["err"])
+    record("SYN-PHP", "a purely static rename of Price::format breaks the dynamic call site, so it cannot be guaranteed safe",
+           "pass" if broken else "fail", "PHP warns that the dynamic callable is not valid after the static rename",
+           {"first_line": after["out"].splitlines()[:1], "diagnostic": (after["out"] + after["err"]).replace("\n", " ")[:240]})
+
+
+def php_semantics():
+    if not shutil.which("php-lsp"):
+        record("SYN-PHP", "semantic checks through php-lsp", "observed", "php-lsp on PATH", "php-lsp not found")
+        return
+    work = TMP_ROOT / "php-lsp"
+    copy_workspace(work)
+    main, price = work / "apps/php-cli/main.php", work / "packages/php-lib/src/Price.php"
+    version = tool_version(["php-lsp", "--version"])
+    srv = Lsp(["php-lsp"], str(work))
+    try:
+        init = srv.request(1, "initialize", {"processId": None, "rootUri": work.as_uri(),
+                                              "workspaceFolders": [{"uri": work.as_uri(), "name": "root"}],
+                                              "capabilities": {"workspace": {"configuration": True, "workspaceFolders": True}}}, 25)
+        if "result" not in init:
+            record("SYN-PHP", "php-lsp initializes", "fail", "initialize result", init)
+            return
+        srv.notify("initialized", {})
+        for path in (main, price):
+            srv.notify("textDocument/didOpen", {"textDocument": {"uri": path.as_uri(), "languageId": "php", "version": 1, "text": path.read_text()}})
+        time.sleep(4)
+        srv.settle(3)
+
+        def find(path, needle):
+            for i, text in enumerate(path.read_text().split("\n")):
+                if needle in text:
+                    return i, text.index(needle.split()[-1].strip("("))
+            raise ValueError(needle)
+
+        def ask(rid, method, path, needle, extra=None):
+            line, char = find(path, needle)
+            params = {"textDocument": {"uri": path.as_uri()}, "position": {"line": line, "character": char}}
+            params.update(extra or {})
+            return srv.request(rid, method, params, 20)
+
+        res = ask(10, "textDocument/definition", main, "new Price").get("result")
+        res = res if isinstance(res, list) else ([res] if res else [])
+        uris = sorted({x.get("uri", x.get("targetUri", "")).replace(work.as_uri(), "<ws>") for x in res})
+        record("SYN-PHP", "%s: definition of Price from main.php resolves to Price.php" % version,
+               "pass" if uris == ["<ws>/packages/php-lib/src/Price.php"] else "fail", ["<ws>/packages/php-lib/src/Price.php"], uris)
+        refs = ask(11, "textDocument/references", price, "class Price", {"context": {"includeDeclaration": True}}).get("result") or []
+        files = sorted({x["uri"].replace(work.as_uri(), "<ws>") for x in refs if x["uri"].startswith(work.as_uri())})
+        record("SYN-PHP", "references to Price reach the declaration and the CLI call site",
+               "pass" if "<ws>/apps/php-cli/main.php" in files and "<ws>/packages/php-lib/src/Price.php" in files else "fail",
+               ["<ws>/apps/php-cli/main.php", "<ws>/packages/php-lib/src/Price.php"], files)
+        edit = ask(12, "textDocument/rename", price, "public function format()", {"newName": "render"}).get("result")
+        changed = apply_workspace_edit(edit, work) if edit else []
+        record("SYN-PHP", "rename Price::format -> render: files php-lsp changes (static call sites)",
+               "pass" if changed == ["apps/php-cli/main.php", "packages/php-lib/src/Price.php"] else "fail",
+               ["apps/php-cli/main.php", "packages/php-lib/src/Price.php"], changed)
+    finally:
+        srv.close()
+    after = run(["php", "-d", "display_errors=1", "apps/php-cli/main.php"], cwd=work)
+    text = after["out"] + after["err"]
+    record("SYN-PHP", "after the semantic rename the dynamic call site is still broken: php-lsp does not resolve the string callable",
+           "pass" if "valid callback" in text else "fail", "PHP warns that the dynamic callable is not valid; rename is not safe for dynamic edges",
+           {"first_line": after["out"].splitlines()[:1], "diagnostic": text.replace("\n", " ")[:200]})
+
+
+class OpsStub(http.server.BaseHTTPRequestHandler):
+    applied = {}
+    requests = 0
+    first_attempt = set()
+
+    def log_message(self, *args):
+        pass
+
+    def _reply(self, code, headers=None, body=b""):
+        self.send_response(code)
+        for k, v in (headers or {}).items():
+            self.send_header(k, v)
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def do_GET(self):
+        if self.path == "/rate":
+            self._reply(429, {"Retry-After": "1"})
+        elif self.path == "/unavailable":
+            self._reply(503)
+        elif self.path == "/slow":
+            time.sleep(3)
+            self._reply(200, body=b"late")
+        elif self.path == "/drop":
+            self.wfile.write(b"HTTP/1.1 200 OK\r\nContent-Length: 100\r\n\r\npartial")
+            self.wfile.flush()
+            self.connection.close()
+        else:
+            self._reply(404)
+
+    def do_POST(self):
+        OpsStub.requests += 1
+        key = self.headers.get("Idempotency-Key", "")
+        length = int(self.headers.get("Content-Length", "0"))
+        self.rfile.read(length)
+        if key not in OpsStub.applied:
+            OpsStub.applied[key] = 1
+        if key not in OpsStub.first_attempt:
+            OpsStub.first_attempt.add(key)
+            self.connection.close()  # write committed, response never delivered
+            return
+        self._reply(200, body=b"ok")
+
+
+def http_outcome(url, timeout=1.5, data=None, headers=None):
+    request = urllib.request.Request(url, data=data, headers=headers or {})
+    try:
+        with urllib.request.urlopen(request, timeout=timeout) as resp:
+            body = resp.read()
+            return {"kind": "ok", "status": resp.status, "body": body.decode()}
+    except urllib.error.HTTPError as exc:
+        kind = {429: "rate_limit", 503: "service_unavailable"}.get(exc.code, "http_error")
+        return {"kind": kind, "status": exc.code, "retry_after": exc.headers.get("Retry-After")}
+    except (TimeoutError, OSError) as exc:
+        reason = getattr(exc, "reason", exc)
+        if isinstance(reason, TimeoutError) or "timed out" in str(reason):
+            return {"kind": "timeout"}
+        return {"kind": "disconnect", "error": type(reason).__name__}
+    except Exception as exc:  # http.client.IncompleteRead, RemoteDisconnected
+        return {"kind": "disconnect", "error": type(exc).__name__}
+
+
+SENTINEL = "DC_SECRET_SENTINEL_9c41e7"
+
+
+def ops_stubs():
+    server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), OpsStub)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    base = "http://127.0.0.1:%d" % server.server_address[1]
+    try:
+        for path, want in (("/rate", "rate_limit"), ("/unavailable", "service_unavailable"), ("/slow", "timeout"), ("/drop", "disconnect")):
+            got = http_outcome(base + path)
+            record("SYN-OPS", "local HTTP stub %s is classified as %s" % (path, want), "pass" if got["kind"] == want else "fail", want, got)
+        rate = http_outcome(base + "/rate")
+        record("SYN-OPS", "429 carries Retry-After so a client can report retry/abstention", "pass" if rate.get("retry_after") == "1" else "fail", "1", rate.get("retry_after"))
+        headers = {"Idempotency-Key": "k1"}
+        first = http_outcome(base + "/write", data=b"x", headers=headers)
+        second = http_outcome(base + "/write", data=b"x", headers=headers)
+        record("SYN-OPS", "reconnect after a committed-but-unanswered write does not duplicate it (idempotency key)",
+               "pass" if first["kind"] == "disconnect" and second["kind"] == "ok" and OpsStub.applied == {"k1": 1} and OpsStub.requests == 2 else "fail",
+               "first attempt disconnects, retry succeeds, one applied write over two requests",
+               {"first": first["kind"], "second": second["kind"], "applied": OpsStub.applied, "requests": OpsStub.requests})
+        record("SYN-OPS", "the stub server is local-only", "pass" if server.server_address[0] == "127.0.0.1" else "fail", "127.0.0.1", server.server_address[0])
+    finally:
+        server.shutdown()
+    leaked = run(["sh", "-c", "echo $DC_SECRET >&2; exit 7"], env=dict(BASE_ENV, DC_SECRET=SENTINEL))
+    redacted = leaked["err"].replace(SENTINEL, "<redacted>").strip()
+    record("SYN-OPS", "exit code and stderr are retained while a secret sentinel is redacted", "pass" if leaked["rc"] == 7 and redacted == "<redacted>" else "fail",
+           "rc 7; stderr '<redacted>'", {"rc": leaked["rc"], "stderr": redacted})
+
+
+def edit_containment():
+    base = TMP_ROOT / "containment"
+    root, outside = base / "root", base / "outside.txt"
+    root.mkdir(parents=True)
+    inside = root / "inside.txt"
+    inside.write_text("old")
+    outside.write_text("old")
+
+    def edit_for(path):
+        return {"changes": {path.as_uri(): [{"range": {"start": {"line": 0, "character": 0}, "end": {"line": 0, "character": 3}}, "newText": "new"}]}}
+
+    for label, edit in (("a file outside the root", {"changes": {**edit_for(inside)["changes"], **edit_for(outside)["changes"]}}),
+                        ("a non-file URI", {"changes": {"https://example.invalid/x": []}}),
+                        ("a path that escapes through '..'", edit_for(root / ".." / "outside.txt"))):
+        try:
+            apply_workspace_edit(edit, root)
+            rejected = False
+        except ValueError:
+            rejected = True
+        untouched = outside.read_text() == "old" and inside.read_text() == "old"
+        record("HARNESS", "a workspace edit naming %s is rejected before any file changes" % label,
+               "pass" if rejected and untouched else "fail", "ValueError; inside and outside files unchanged",
+               {"rejected": rejected, "files_unchanged": untouched})
+    apply_workspace_edit(edit_for(inside), root)
+    record("HARNESS", "a workspace edit inside the root is still applied", "pass" if inside.read_text() == "new" else "fail", "new", inside.read_text())
+
+
 def syn_mem():
     data = json.loads((SYN / "memory/records.json").read_text())["records"]
     superseded = {r["supersedes"] for r in data if r["supersedes"]}
@@ -438,13 +737,18 @@ def syn_mem():
 def main():
     out = Path(sys.argv[1]) if len(sys.argv) > 1 else None
     started = time.time()
-    steps = (syn_php, syn_tsjs, syn_py, syn_wt, fail_modes, real_providers, syn_mem)
+    steps = (syn_php, syn_tsjs, syn_py, syn_wt, fail_modes, real_providers, edit_containment, rename_safety, php_semantics, ops_stubs, syn_mem)
     try:
         for step in steps:
             step()
     finally:
         shutil.rmtree(TMP_ROOT, ignore_errors=True)
         shutil.rmtree(BASE_ENV["HOME"], ignore_errors=True)
+    if SENTINEL in json.dumps(RESULTS):
+        RESULTS.append({"scenario": "SYN-OPS", "check": "secret sentinel absent from the serialized results", "result": "fail",
+                        "expected": "absent", "observed": "present"})
+    else:
+        record("SYN-OPS", "secret sentinel absent from the serialized results", "pass", "absent", "absent")
     summary = {k: sum(1 for r in RESULTS if r["result"] == k) for k in ("pass", "fail", "observed")}
     report = {"schema_version": 1, "issue": "DC-001", "subject": "synthetic corpus only; DrCooper not executed",
               "base_commit": run(["git", "rev-parse", "HEAD"], cwd=REPO)["out"].strip(),
