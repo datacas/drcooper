@@ -139,15 +139,15 @@
       "results": "corpus/harness/results/run-2026-10-30.json",
       "subject": "synthetic corpus and real language servers; DrCooper not executed",
       "summary": { "pass": 28, "fail": 0, "observed": 4 },
-      "limits": ["no PHP language server installed", "no DrCooper component executed", "rename safety not exercised"]
+      "limits": ["PHP semantics not exercised by this run", "no DrCooper component executed", "rename safety not exercised"]
     },
     {
-      "date": "2026-10-30",
+      "date": "2026-10-31",
       "harness": "corpus/harness/run_corpus.py",
-      "results": "corpus/harness/results/run-2026-10-30b.json",
-      "subject": "adds rename safety and local operational stubs; DrCooper not executed",
-      "summary": { "pass": 40, "fail": 0, "observed": 8 },
-      "limits": ["no PHP language server installed", "no DrCooper component executed", "retry policy of a real client not exercised"]
+      "results": "corpus/harness/results/run-2026-10-31.json",
+      "subject": "adds rename safety, php-lsp semantics and local operational stubs; DrCooper not executed",
+      "summary": { "pass": 44, "fail": 0, "observed": 7 },
+      "limits": ["no DrCooper component executed", "retry policy of a real client not exercised", "alternative PHP servers not installed"]
     }
   ],
   "benchmark_metrics": null

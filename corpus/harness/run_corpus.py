@@ -431,9 +431,9 @@ def fail_modes():
 
 
 def real_providers():
-    record("FAIL-PHP", "real PHP language server executables are absent from PATH (provider missing, observed)", "observed",
-           "intelephense/phpactor/psalm not on PATH",
-           {n: bool(shutil.which(n)) for n in ("intelephense", "phpactor", "psalm")})
+    record("FAIL-PHP", "PHP providers on PATH: the configured php-lsp is present; the alternatives are absent (provider missing, observed)", "observed",
+           "php-lsp present; intelephense, phpactor and psalm not on PATH",
+           {n: bool(shutil.which(n)) for n in ("php-lsp", "intelephense", "phpactor", "psalm")})
     tsc_real = Path(shutil.which("tsc")).resolve()
     candidates = [tsc_real.parent.parent / "lib" / "tsserver.js", tsc_real.parent / "tsserver.js"]
     record("FAIL-TSJS", "the global compiler directory has no tsserver entry point (dependency class, observed)", "observed",
@@ -526,7 +526,64 @@ def rename_safety():
     record("SYN-PHP", "a purely static rename of Price::format breaks the dynamic call site, so it cannot be guaranteed safe",
            "pass" if broken else "fail", "PHP warns that the dynamic callable is not valid after the static rename",
            {"first_line": after["out"].splitlines()[:1], "diagnostic": (after["out"] + after["err"]).replace("\n", " ")[:240]})
-    record("SYN-PHP", "no PHP rename provider is installed", "observed", "intelephense/phpactor/psalm", {n: bool(shutil.which(n)) for n in ("intelephense", "phpactor", "psalm")})
+
+
+def php_semantics():
+    if not shutil.which("php-lsp"):
+        record("SYN-PHP", "semantic checks through php-lsp", "observed", "php-lsp on PATH", "php-lsp not found")
+        return
+    work = TMP_ROOT / "php-lsp"
+    copy_workspace(work)
+    main, price = work / "apps/php-cli/main.php", work / "packages/php-lib/src/Price.php"
+    version = tool_version(["php-lsp", "--version"])
+    srv = Lsp(["php-lsp"], str(work))
+    try:
+        init = srv.request(1, "initialize", {"processId": None, "rootUri": work.as_uri(),
+                                              "workspaceFolders": [{"uri": work.as_uri(), "name": "root"}],
+                                              "capabilities": {"workspace": {"configuration": True, "workspaceFolders": True}}}, 25)
+        if "result" not in init:
+            record("SYN-PHP", "php-lsp initializes", "fail", "initialize result", init)
+            return
+        srv.notify("initialized", {})
+        for path in (main, price):
+            srv.notify("textDocument/didOpen", {"textDocument": {"uri": path.as_uri(), "languageId": "php", "version": 1, "text": path.read_text()}})
+        time.sleep(4)
+        srv.settle(3)
+
+        def find(path, needle):
+            for i, text in enumerate(path.read_text().split("\n")):
+                if needle in text:
+                    return i, text.index(needle.split()[-1].strip("("))
+            raise ValueError(needle)
+
+        def ask(rid, method, path, needle, extra=None):
+            line, char = find(path, needle)
+            params = {"textDocument": {"uri": path.as_uri()}, "position": {"line": line, "character": char}}
+            params.update(extra or {})
+            return srv.request(rid, method, params, 20)
+
+        res = ask(10, "textDocument/definition", main, "new Price").get("result")
+        res = res if isinstance(res, list) else ([res] if res else [])
+        uris = sorted({x.get("uri", x.get("targetUri", "")).replace(work.as_uri(), "<ws>") for x in res})
+        record("SYN-PHP", "%s: definition of Price from main.php resolves to Price.php" % version,
+               "pass" if uris == ["<ws>/packages/php-lib/src/Price.php"] else "fail", ["<ws>/packages/php-lib/src/Price.php"], uris)
+        refs = ask(11, "textDocument/references", price, "class Price", {"context": {"includeDeclaration": True}}).get("result") or []
+        files = sorted({x["uri"].replace(work.as_uri(), "<ws>") for x in refs if x["uri"].startswith(work.as_uri())})
+        record("SYN-PHP", "references to Price reach the declaration and the CLI call site",
+               "pass" if "<ws>/apps/php-cli/main.php" in files and "<ws>/packages/php-lib/src/Price.php" in files else "fail",
+               ["<ws>/apps/php-cli/main.php", "<ws>/packages/php-lib/src/Price.php"], files)
+        edit = ask(12, "textDocument/rename", price, "public function format()", {"newName": "render"}).get("result")
+        changed = apply_workspace_edit(edit, work) if edit else []
+        record("SYN-PHP", "rename Price::format -> render: files php-lsp changes (static call sites)",
+               "pass" if changed == ["apps/php-cli/main.php", "packages/php-lib/src/Price.php"] else "fail",
+               ["apps/php-cli/main.php", "packages/php-lib/src/Price.php"], changed)
+    finally:
+        srv.close()
+    after = run(["php", "-d", "display_errors=1", "apps/php-cli/main.php"], cwd=work)
+    text = after["out"] + after["err"]
+    record("SYN-PHP", "after the semantic rename the dynamic call site is still broken: php-lsp does not resolve the string callable",
+           "pass" if "valid callback" in text else "fail", "PHP warns that the dynamic callable is not valid; rename is not safe for dynamic edges",
+           {"first_line": after["out"].splitlines()[:1], "diagnostic": text.replace("\n", " ")[:200]})
 
 
 class OpsStub(http.server.BaseHTTPRequestHandler):
@@ -636,7 +693,7 @@ def syn_mem():
 def main():
     out = Path(sys.argv[1]) if len(sys.argv) > 1 else None
     started = time.time()
-    steps = (syn_php, syn_tsjs, syn_py, syn_wt, fail_modes, real_providers, rename_safety, ops_stubs, syn_mem)
+    steps = (syn_php, syn_tsjs, syn_py, syn_wt, fail_modes, real_providers, rename_safety, php_semantics, ops_stubs, syn_mem)
     try:
         for step in steps:
             step()

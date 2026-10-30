@@ -2,16 +2,16 @@
   "schema_version": 1,
   "issue": "DC-001",
   "subject": "synthetic corpus only; DrCooper not executed",
-  "base_commit": "c589095c2a74d4328418c59c6b1172c227c4cda7",
+  "base_commit": "80b047ea6d936e1da00373925d938934f34bc48e",
   "environment": {
     "os": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.35",
     "python": "3.10.12"
   },
-  "duration_s": 48.8,
+  "duration_s": 54.0,
   "summary": {
-    "pass": 40,
+    "pass": 44,
     "fail": 0,
-    "observed": 8
+    "observed": 7
   },
   "checks": [
     {
@@ -304,10 +304,11 @@
     },
     {
       "scenario": "FAIL-PHP",
-      "check": "real PHP language server executables are absent from PATH (provider missing, observed)",
+      "check": "PHP providers on PATH: the configured php-lsp is present; the alternatives are absent (provider missing, observed)",
       "result": "observed",
-      "expected": "intelephense/phpactor/psalm not on PATH",
+      "expected": "php-lsp present; intelephense, phpactor and psalm not on PATH",
       "observed": {
+        "php-lsp": true,
         "intelephense": false,
         "phpactor": false,
         "psalm": false
@@ -465,13 +466,51 @@
     },
     {
       "scenario": "SYN-PHP",
-      "check": "no PHP rename provider is installed",
-      "result": "observed",
-      "expected": "intelephense/phpactor/psalm",
+      "check": "php-lsp 0.26.0: definition of Price from main.php resolves to Price.php",
+      "result": "pass",
+      "expected": [
+        "<ws>/packages/php-lib/src/Price.php"
+      ],
+      "observed": [
+        "<ws>/packages/php-lib/src/Price.php"
+      ]
+    },
+    {
+      "scenario": "SYN-PHP",
+      "check": "references to Price reach the declaration and the CLI call site",
+      "result": "pass",
+      "expected": [
+        "<ws>/apps/php-cli/main.php",
+        "<ws>/packages/php-lib/src/Price.php"
+      ],
+      "observed": [
+        "<ws>/apps/php-cli/main.php",
+        "<ws>/packages/php-lib/src/Price.php"
+      ]
+    },
+    {
+      "scenario": "SYN-PHP",
+      "check": "rename Price::format -> render: files php-lsp changes (static call sites)",
+      "result": "pass",
+      "expected": [
+        "apps/php-cli/main.php",
+        "packages/php-lib/src/Price.php"
+      ],
+      "observed": [
+        "apps/php-cli/main.php",
+        "packages/php-lib/src/Price.php"
+      ]
+    },
+    {
+      "scenario": "SYN-PHP",
+      "check": "after the semantic rename the dynamic call site is still broken: php-lsp does not resolve the string callable",
+      "result": "pass",
+      "expected": "PHP warns that the dynamic callable is not valid; rename is not safe for dynamic edges",
       "observed": {
-        "intelephense": false,
-        "phpactor": false,
-        "psalm": false
+        "first_line": [
+          "12.50 EUR"
+        ],
+        "diagnostic": "12.50 EUR  Warning: call_user_func() expects parameter 1 to be a valid callback, class 'DcFixture\\Price' does not have a method 'format' in <tmp>/php-lsp/apps/php-cli/main.php on lin"
       }
     },
     {
