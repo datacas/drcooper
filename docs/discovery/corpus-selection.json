@@ -140,6 +140,14 @@
       "subject": "synthetic corpus and real language servers; DrCooper not executed",
       "summary": { "pass": 28, "fail": 0, "observed": 4 },
       "limits": ["no PHP language server installed", "no DrCooper component executed", "rename safety not exercised"]
+    },
+    {
+      "date": "2026-10-30",
+      "harness": "corpus/harness/run_corpus.py",
+      "results": "corpus/harness/results/run-2026-10-30b.json",
+      "subject": "adds rename safety and local operational stubs; DrCooper not executed",
+      "summary": { "pass": 40, "fail": 0, "observed": 8 },
+      "limits": ["no PHP language server installed", "no DrCooper component executed", "retry policy of a real client not exercised"]
     }
   ],
   "benchmark_metrics": null

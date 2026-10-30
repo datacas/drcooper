@@ -12,4 +12,6 @@ Result values: `pass` and `fail` are checked against a fixed oracle; `observed` 
 
 Requirements: `git`, `php`, `node` (type stripping), `tsc`, `typescript-language-server`, `basedpyright` and `basedpyright-langserver`. The tsserver-backed checks need a `typescript/lib/tsserver.js` under `~/.nvm/versions/node/*/lib/node_modules`; without one they are recorded as `observed`, not `pass`.
 
-Not covered: PHP semantic analysis (no PHP language server is installed), rename safety, and any DrCooper component.
+Rename findings recorded by the harness: tsserver's default rename keeps the exported name through an alias (`formatMoney as formatPrice`) and leaves consumers untouched; renaming every consumer needs `providePrefixAndSuffixTextForRename=false` and the consumer files open, and without them project-reference consumers are missed. Python rename follows the star export and touches `__init__.py`. A static PHP rename breaks the dynamic `call_user_func` site at runtime.
+
+Not covered: PHP semantic analysis (no PHP language server is installed), a real client's retry policy (the HTTP stubs only check that failure classes are distinguishable and that an idempotency key prevents a duplicate write), and any DrCooper component.
