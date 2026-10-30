@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "issue": "DC-001",
+  "selection_date": "2026-10-27",
+  "status": "public_sources_pinned_synthetic_scenarios_specified_not_executed",
+  "maintainer_validation": {
+    "status": "pending_independent_corpus_evidence",
+    "approved_by_functional_scope_confirmation": false,
+    "scope_approval_authorizes_private_sources": false,
+    "note": "Functional scope approval does not validate corpus selection or executed coverage. Public source pins and synthetic scenario specifications are the current evidence boundary."
+  },
+  "privacy": {
+    "allowed_sources": ["public_open_source", "independently_authored_synthetic"],
+    "private_repository_content_and_identifiers": "excluded",
+    "private_derived_fixtures": "excluded",
+    "upstream_source_vendored": false,
+    "external_private_content_export_authorized": false
+  },
+  "public_sources": [
+    {
+      "id": "PUB-PHP",
+      "repository": "https://github.com/symfony/console",
+      "tag": "v3.4.47",
+      "commit": "a10b1da6fc93080c180bba7219b5ff5b7518fe81",
+      "languages": ["PHP"],
+      "license": "MIT",
+      "license_file": "LICENSE",
+      "license_git_blob": "9e936ec0448b8549e5edf08e5ac5f01491a8bfc8",
+      "manifest": "composer.json",
+      "runtime_constraint": "^5.5.9|>=7.0.8",
+      "root_lockfile": null,
+      "declared_runtime_dependencies": {
+        "symfony/polyfill-mbstring": "~1.0",
+        "symfony/debug": "~2.8|~3.0|~4.0"
+      },
+      "observed_files": {
+        "Application.php": "e9e3defa1c00a96ac429590d36360d6720140685",
+        "Command/Command.php": "d896f67fd08bde0bbe1f79ddef645a52848aa8df",
+        "Tests/ApplicationTest.php": "16d856c460c36f1d7cea948e28ad24ee36ccb69d"
+      },
+      "semantic_scenario": "Application, Command and test callers across files",
+      "verification": "public_revision_manifest_license_file_presence_only",
+      "test_environment_resolved": false,
+      "archive_sha256": null
+    },
+    {
+      "id": "PUB-TSJS",
+      "repository": "https://github.com/reduxjs/redux",
+      "tag": "v4.2.1",
+      "commit": "f4b3ab9ac5370c5520d08383c5fc88e1e1c64587",
+      "languages": ["JavaScript", "TypeScript"],
+      "license": "MIT",
+      "license_file": "LICENSE.md",
+      "license_git_blob": "55bc8dfbe90cb54a2d6611e97007e5ee026486da",
+      "manifest": "package.json",
+      "root_lockfile": "package-lock.json",
+      "lockfile_version": 2,
+      "lockfile_git_blob": "99a3a0fb5066d7b1e2b0487d1716ae509e6c8954",
+      "observed_locked_dependencies": {
+        "typescript": "3.9.6",
+        "jest": "25.5.4",
+        "@babel/runtime": "7.13.10",
+        "eslint": "6.8.0",
+        "rollup": "2.44.0"
+      },
+      "observed_files": {
+        "src/index.js": "d5991f3471f9a6ac33a28f369bdc4b5e9bd849c6",
+        "src/createStore.js": "b588e3a04d98000e3c1d60d4047fd6ea354e6d9e",
+        "index.d.ts": "f9221966113030dd45fc2454ea699e46e36d8c30",
+        "test/typescript/store.ts": "7c5ace9c9e2835b716784447e2f66b3d9995dcb1"
+      },
+      "semantic_scenario": "JS implementation and re-export, TS declarations and consumer tests",
+      "coverage_limit": "Not a TypeScript implementation corpus; SYN-TSJS supplies that scenario",
+      "exclude_assets": ["logo", "artwork", "website"],
+      "verification": "public_revision_manifest_license_file_presence_and_selected_lock_entries_only",
+      "test_environment_resolved": false,
+      "archive_sha256": null
+    },
+    {
+      "id": "PUB-PY",
+      "repository": "https://github.com/pallets/click",
+      "tag": "8.1.7",
+      "commit": "874ca2bc1c30d93a4ac6e36a15ed685eafe89097",
+      "languages": ["Python"],
+      "license": "BSD-3-Clause",
+      "license_file": "LICENSE.rst",
+      "license_git_blob": "d12a849186982399c537c5b9a8fd77bf2edd5eab",
+      "manifest": "setup.cfg",
+      "runtime_constraint": ">=3.7",
+      "conditional_dependencies": [
+        "colorama; platform_system == 'Windows'",
+        "importlib-metadata; python_version < '3.8'"
+      ],
+      "test_requirements": "requirements/tests.txt",
+      "test_requirements_git_blob": "6a6808865865c3f44824c2c3a3f4a8ae1aeb463d",
+      "observed_test_pins": {
+        "pytest": "7.4.0",
+        "iniconfig": "2.0.0",
+        "packaging": "23.1",
+        "pluggy": "1.2.0"
+      },
+      "observed_files": {
+        "src/click/__init__.py": "9a1dab048917edc420af440c73bd1d689de6b3fa",
+        "src/click/core.py": "cc65e896bf2d754d74b54a84ac501b80127f83ca",
+        "src/click/decorators.py": "d9bba9502ca353bca5136f43c92436ff584f06e1"
+      },
+      "semantic_scenario": "Relative imports, re-exports, decorators and command callbacks",
+      "exclude_assets": ["artwork"],
+      "verification": "public_revision_manifest_license_file_presence_and_test_pins_only",
+      "test_environment_resolved": false,
+      "archive_sha256": null
+    }
+  ],
+  "synthetic_scenarios": [
+    {"id": "SYN-PHP", "languages": ["PHP"], "covers": ["cross_file", "monorepo", "dynamic_coverage_limit"], "flows": ["F-01", "F-02", "F-06"]},
+    {"id": "SYN-TSJS", "languages": ["TypeScript", "JavaScript"], "covers": ["cross_file", "monorepo", "path_alias", "project_reference", "re_export"], "flows": ["F-01", "F-02", "F-06"]},
+    {"id": "SYN-PY", "languages": ["Python"], "covers": ["cross_file", "monorepo", "multiple_environments", "relative_and_star_import"], "flows": ["F-01", "F-02", "F-06"]},
+    {"id": "SYN-WT", "languages": ["PHP", "TypeScript", "JavaScript", "Python"], "covers": ["two_worktrees", "scope_isolation", "concurrent_sessions"], "flows": ["F-05", "F-10", "F-12"]},
+    {"id": "FAIL-PHP", "languages": ["PHP"], "covers": ["provider_missing", "provider_crash", "provider_timeout"], "flows": ["F-01", "F-11"]},
+    {"id": "FAIL-TSJS", "languages": ["TypeScript", "JavaScript"], "covers": ["provider_missing", "provider_crash", "provider_timeout", "tsserver_dependency_missing"], "flows": ["F-01", "F-11"]},
+    {"id": "FAIL-PY", "languages": ["Python"], "covers": ["provider_missing", "provider_crash", "provider_timeout", "environment_mismatch"], "flows": ["F-01", "F-11"]},
+    {"id": "SYN-MEM", "languages": [], "covers": ["scope_isolation", "literal_constraint_conservation", "source_lineage", "reversible_archive"], "flows": ["F-05", "F-12", "F-13"]},
+    {"id": "SYN-OPS", "languages": [], "covers": ["exit_and_stderr", "malformed_protocol", "disconnect", "rate_limit", "service_unavailable", "secret_sentinel"], "flows": ["F-03", "F-04", "F-07", "F-08", "F-09", "F-10", "F-11", "F-14"]}
+  ],
+  "synthetic_materialization": {
+    "status": "specified_only",
+    "license_for_new_source": "MIT",
+    "derived_from_private_code": false,
+    "fixture_commit": null,
+    "fixture_sha256": null,
+    "oracles": "technical-discovery.md#proposed-synthetic-corpus-authored-independently"
+  },
+  "executed_corpus_runs": [],
+  "benchmark_metrics": null
+}
